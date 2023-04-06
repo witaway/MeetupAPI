@@ -10,8 +10,8 @@
     "generate": "npx prisma generate"
   },
   "prisma": {
-    "schema": "src/database/schema.prisma",
-    "seed": "ts-node src/database/seed.ts"
+    "schema": "src/database/prisma/schema.prisma",
+    "seed": "ts-node src/database/prisma/seed.ts"
   },
   "author": "",
   "license": "ISC",
