@@ -7,7 +7,8 @@
     "start": "node ./dist/app.js",
     "dev": "ts-node-dev -r tsconfig-paths/register src/app.ts",
     "build": "tsc && tsc-alias",
-    "generate": "npx prisma generate"
+    "generate": "npx prisma generate",
+    "fix": "eslint --fix --ext .js,.ts ./src"
   },
   "prisma": {
     "schema": "src/database/prisma/schema.prisma",
