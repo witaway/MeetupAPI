@@ -4,11 +4,39 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url = env("DATABASE_URL")
+  url      = env("DATABASE_URL")
 }
 
 model User {
   id    Int     @id @default(autoincrement())
+  name  String
   email String  @unique
-  name  String?
+  password String
+  roles Role[]
+  meetupsOwn Meetup[] @relation(name: "meetups_users_own")
+  meetupsParticipating Meetup[] @relation(name: "meetups_users_participating")
+}
+
+model Role {
+  id Int @id @default(autoincrement())
+  name String
+  users User[]
+}
+
+model Meetup {
+  id          Int      @id @default(autoincrement())
+  theme       String
+  description String
+  place       String
+  time        DateTime
+  ownerId Int
+  owner User @relation(fields: [ownerId], references: [id], name: "meetups_users_own")
+  members User[] @relation(name: "meetups_users_participating")
+  tags Tag[]
+}
+
+model Tag {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+  meetups Meetup[]
 }
