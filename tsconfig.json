@@ -24,13 +24,12 @@
 
         "paths": {
             "*": ["node_modules/*", "src/types/*"],
-            "@classes/*": ["src/classes/*"],
+            "@config/*": ["src/config/*"],
             "@database/*": ["src/database/*"],
             "@middlewares/*": ["src/middlewares/*"],
             "@repositories/*": ["src/repositories/*"],
             "@services/*": ["src/services/*"],
-            "@utils": ["src/utils/*"],
-            "@config": ["src/config/*"]
+            "@utils/*": ["src/utils/*"],
         }
     },
     "exclude": ["node_modules"],
