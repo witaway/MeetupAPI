@@ -2,10 +2,15 @@ import UserService from '@services/user.service';
 import AuthService from '@services/auth.service';
 import ResponseFormat from '@utils/response-format';
 
-import { Request, Response } from 'express-serve-static-core';
+import { Response } from 'express-serve-static-core';
+import { TypedRequest } from '@customTypes/express-extension';
+import { loginSchema, logoutSchema, registerSchema } from '@dto/auth.dto';
 
 class AuthController {
-	static async register(req: Request, res: Response) {
+	static async register(
+		req: TypedRequest<typeof registerSchema>,
+		res: Response,
+	) {
 		const userObject = await UserService.create({
 			name: req.body.name,
 			email: req.body.email,
@@ -16,7 +21,7 @@ class AuthController {
 			.json(ResponseFormat.success(200, 'Registered successfully', userObject));
 	}
 
-	static async login(req: Request, res: Response) {
+	static async login(req: TypedRequest<typeof loginSchema>, res: Response) {
 		const token = await AuthService.loginWithEmailAndPassword(
 			req.body.email,
 			req.body.password,
@@ -35,7 +40,7 @@ class AuthController {
 			.json(ResponseFormat.success(200, 'Logged in successfully', { token }));
 	}
 
-	static async logout(req: Request, res: Response) {
+	static async logout(req: TypedRequest<typeof logoutSchema>, res: Response) {
 		// req.logout();
 		res.clearCookie('jwt');
 		res
@@ -44,4 +49,4 @@ class AuthController {
 	}
 }
 
-module.exports = AuthController;
+export default AuthController;

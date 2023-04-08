@@ -1,9 +1,9 @@
 import UserRepository from '@repositories/user.repository';
 import { ConflictException, NotFoundException } from '@utils/errors';
-import { User } from '@prisma/client';
+import { RegisterCredentials } from '@dto/auth.dto';
 
 class UserService {
-	static async create(personalInfo: Omit<User, 'id'>) {
+	static async create(personalInfo: RegisterCredentials) {
 		const userWithGivenEmail = await UserRepository.getByEmail(
 			personalInfo.email,
 		);
@@ -25,7 +25,10 @@ class UserService {
 		return user;
 	}
 
-	static async updateByID(id: number, personalInfo: Omit<User, 'id'>) {
+	static async updateByID(
+		id: number,
+		personalInfo: Partial<RegisterCredentials>,
+	) {
 		await UserService.getByID(id);
 		return UserRepository.updateByID(id, personalInfo);
 	}

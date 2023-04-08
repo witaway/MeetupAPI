@@ -1,14 +1,12 @@
 import { Router } from 'express';
+import validate from '@middlewares/validate.middleware';
+import { loginSchema, logoutSchema, registerSchema } from '@dto/auth.dto';
+import AuthController from '../controllers/auth.controller';
 
 const router = Router();
 
-const AuthController = require('../controllers/auth-controllers');
+router.post('/register', validate(registerSchema), AuthController.register);
+router.get('/login', validate(loginSchema), AuthController.login);
+router.get('/logout', validate(logoutSchema), AuthController.logout);
 
-const validator = require('../middlewares/validator');
-const schemas = require('../schemas/auth-schemas');
-
-router.post('/register', validator(schemas.register), AuthController.register);
-router.get('/login', validator(schemas.login), AuthController.login);
-router.get('/logout', validator(schemas.logout), AuthController.logout);
-
-module.exports = router;
+export default router;
