@@ -7,11 +7,11 @@ import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import passport from 'passport';
 
-const initExpressModules = (server: Express) => {
+const setupExpress = (server: Express) => {
 	server.use(bodyParser.json());
 	server.use(bodyParser.urlencoded({ extended: true }));
 	server.use(cookieParser(process.env['COOKIE_SECRET']));
 	server.use(passport.initialize());
 };
 
-export default initExpressModules;
+export default setupExpress;

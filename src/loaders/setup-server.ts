@@ -1,6 +1,6 @@
 import * as http from 'http';
 
-const initStartServer = (server: http.Server, port: number) => {
+const setupServer = (server: http.Server, port: number) => {
 	console.log('SETUP - Starting server..');
 
 	server.listen(port, () => {
@@ -12,4 +12,4 @@ const initStartServer = (server: http.Server, port: number) => {
 	});
 };
 
-export default initStartServer;
+export default setupServer;
