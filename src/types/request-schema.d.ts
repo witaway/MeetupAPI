@@ -1,6 +1,6 @@
 import { ZodType, ZodTypeDef } from 'zod';
 
-export declare type Schemas = {
+export type RequestSchema = {
 	params?: ZodType<any, ZodTypeDef, any>;
 	query?: ZodType<any, ZodTypeDef, any>;
 	body?: ZodType<any, ZodTypeDef, any>;
