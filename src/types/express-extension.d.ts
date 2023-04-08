@@ -1,16 +1,17 @@
-import { Request, ParamsDictionary } from 'express-serve-static-core';
-import { ZodType, ZodTypeDef, z } from 'zod';
-import { RequestSchema } from './request-schema';
+import { Role } from '@prisma/client';
 
-export declare type TypedRequest<TSchemas extends RequestSchema> = Request<
-	TSchemas['params'] extends ZodType<any, ZodTypeDef, any>
-		? z.infer<TSchemas['params']>
-		: ParamsDictionary,
-	string,
-	TSchemas['body'] extends ZodType<any, ZodTypeDef, any>
-		? z.infer<TSchemas['body']>
-		: any,
-	TSchemas['query'] extends ZodType<any, ZodTypeDef, any>
-		? z.infer<TSchemas['query']>
-		: any
->;
+export {};
+declare global {
+	namespace Express {
+		export interface User {
+			roles: Role[];
+			id: number;
+			name: string;
+			email: string;
+			password: string;
+		}
+		export interface Request {
+			user?: User;
+		}
+	}
+}
