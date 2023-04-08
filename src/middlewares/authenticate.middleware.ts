@@ -8,6 +8,7 @@ const authenticate = (req: Request, res: Response, next: NextFunction) => {
 		{
 			session: false,
 		},
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		(err: any, user: any, info: any) => {
 			if (err) {
 				return res
