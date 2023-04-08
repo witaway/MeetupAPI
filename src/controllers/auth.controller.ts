@@ -2,8 +2,8 @@ import UserService from '@services/user.service';
 import AuthService from '@services/auth.service';
 import ResponseFormat from '@utils/response-format';
 
-import { Response } from 'express-serve-static-core';
-import { TypedRequest } from '@customTypes/express-extension';
+import { NextFunction, Response } from 'express-serve-static-core';
+import { TypedRequest } from '@customTypes/express-typed-request';
 import { loginSchema, logoutSchema, registerSchema } from '@dto/auth.dto';
 
 class AuthController {
@@ -40,8 +40,14 @@ class AuthController {
 			.json(ResponseFormat.success(200, 'Logged in successfully', { token }));
 	}
 
-	static async logout(req: TypedRequest<typeof logoutSchema>, res: Response) {
-		// req.logout();
+	static async logout(
+		req: TypedRequest<typeof logoutSchema>,
+		res: Response,
+		next: NextFunction,
+	) {
+		req.logout((err) => {
+			return next(err);
+		});
 		res.clearCookie('jwt');
 		res
 			.status(200)

@@ -4,6 +4,7 @@ import * as express from 'express';
 import path from 'path';
 
 import router from '../routes';
+import passport from 'passport';
 
 const setupRoutes = (server: Express) => {
 	// Mount directory with static data
