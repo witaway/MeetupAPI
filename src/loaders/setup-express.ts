@@ -6,11 +6,12 @@ import { Express } from 'express';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import passport from 'passport';
+import env from '@config/env';
 
 const setupExpress = (server: Express) => {
 	server.use(bodyParser.json());
 	server.use(bodyParser.urlencoded({ extended: true }));
-	server.use(cookieParser(process.env['COOKIE_SECRET']));
+	server.use(cookieParser(env.COOKIE_SECRET));
 	server.use(passport.initialize());
 };
 

@@ -8,7 +8,7 @@ import init from './loaders';
 (async () => {
 	// Create web server
 	const server = express();
-	const port = env.HTTP_PORT; //+process.env['PORT']!;
+	const port = env.HTTP_PORT;
 
 	// Initialize everything else
 	await init(server, port);
