@@ -24,13 +24,14 @@
 
         "paths": {
             "*": ["node_modules/*"],
-            "@types/*": ["src/types/*"],
+            "@customTypes/*": ["src/types/*"],
             "@config/*": ["src/config/*"],
             "@database/*": ["src/database/*"],
             "@middlewares/*": ["src/middlewares/*"],
             "@repositories/*": ["src/repositories/*"],
             "@services/*": ["src/services/*"],
-            "@utils/*": ["src/utils/*"]
+            "@utils/*": ["src/utils/*"],
+            "@dto/*": ["src/dto/*"]
         }
     },
     "exclude": ["node_modules"],
