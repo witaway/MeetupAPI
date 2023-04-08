@@ -3,10 +3,10 @@ import validate from '@middlewares/validate.middleware';
 import { loginSchema, logoutSchema, registerSchema } from '@dto/auth.dto';
 import AuthController from '../controllers/auth.controller';
 
-const router = Router();
+const authRouter = Router();
 
-router.post('/register', validate(registerSchema), AuthController.register);
-router.get('/login', validate(loginSchema), AuthController.login);
-router.get('/logout', validate(logoutSchema), AuthController.logout);
+authRouter.post('/register', validate(registerSchema), AuthController.register);
+authRouter.get('/login', validate(loginSchema), AuthController.login);
+authRouter.get('/logout', validate(logoutSchema), AuthController.logout);
 
-export default router;
+export default authRouter;
