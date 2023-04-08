@@ -8,7 +8,7 @@ class ResponseFormat {
 		};
 	}
 
-	static error(statusCode: number, message: number, object: object) {
+	static error(statusCode: number, message: string, object: object) {
 		return {
 			error: object,
 			message: message,
