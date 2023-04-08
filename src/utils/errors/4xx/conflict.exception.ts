@@ -1,13 +1,9 @@
-import { StatusCodes, getReasonPhrase } from 'http-status-codes';
+import { StatusCodes } from 'http-status-codes';
+import HttpError from '@utils/errors/http-error';
 
-class ConflictException extends Error {
-	status: number;
-	name: string;
+class ConflictException extends HttpError {
 	constructor(message: string) {
-		super(message);
-		this.status = StatusCodes.CONFLICT;
-		this.name = getReasonPhrase(this.status);
-		// Set the prototype explicitly.
+		super(StatusCodes.CONFLICT, message);
 		Object.setPrototypeOf(this, ConflictException.prototype);
 	}
 }

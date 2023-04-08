@@ -1,13 +1,9 @@
-import { StatusCodes, getReasonPhrase } from 'http-status-codes';
+import { StatusCodes } from 'http-status-codes';
+import HttpError from '@utils/errors/http-error';
 
-class NotImplementedException extends Error {
-	status: number;
-	name: string;
+class NotImplementedException extends HttpError {
 	constructor(message: string) {
-		super(message);
-		this.status = StatusCodes.NOT_IMPLEMENTED;
-		this.name = getReasonPhrase(this.status);
-		// Set the prototype explicitly.
+		super(StatusCodes.NOT_IMPLEMENTED, message);
 		Object.setPrototypeOf(this, NotImplementedException.prototype);
 	}
 }

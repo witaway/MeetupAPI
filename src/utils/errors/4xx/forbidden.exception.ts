@@ -1,13 +1,9 @@
-import { StatusCodes, getReasonPhrase } from 'http-status-codes';
+import { StatusCodes } from 'http-status-codes';
+import HttpError from '@utils/errors/http-error';
 
-class ForbiddenException extends Error {
-	status: number;
-	name: string;
+class ForbiddenException extends HttpError {
 	constructor(message: string) {
-		super(message);
-		this.status = StatusCodes.FORBIDDEN;
-		this.name = getReasonPhrase(this.status);
-		// Set the prototype explicitly.
+		super(StatusCodes.FORBIDDEN, message);
 		Object.setPrototypeOf(this, ForbiddenException.prototype);
 	}
 }

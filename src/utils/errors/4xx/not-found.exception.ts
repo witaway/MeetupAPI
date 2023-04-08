@@ -1,13 +1,9 @@
-import { StatusCodes, getReasonPhrase } from 'http-status-codes';
+import { StatusCodes } from 'http-status-codes';
+import HttpError from '@utils/errors/http-error';
 
-class NotFoundException extends Error {
-	status: number;
-	name: string;
+class NotFoundException extends HttpError {
 	constructor(message: string) {
-		super(message);
-		this.status = StatusCodes.NOT_FOUND;
-		this.name = getReasonPhrase(this.status);
-		// Set the prototype explicitly.
+		super(StatusCodes.NOT_FOUND, message);
 		Object.setPrototypeOf(this, NotFoundException.prototype);
 	}
 }

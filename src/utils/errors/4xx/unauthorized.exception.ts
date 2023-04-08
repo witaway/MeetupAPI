@@ -1,13 +1,9 @@
-import { StatusCodes, getReasonPhrase } from 'http-status-codes';
+import { StatusCodes } from 'http-status-codes';
+import HttpError from '@utils/errors/http-error';
 
-class UnauthorizedException extends Error {
-	status: number;
-	name: string;
+class UnauthorizedException extends HttpError {
 	constructor(message: string) {
-		super(message);
-		this.status = StatusCodes.UNAUTHORIZED;
-		this.name = getReasonPhrase(this.status);
-		// Set the prototype explicitly.
+		super(StatusCodes.UNAUTHORIZED, message);
 		Object.setPrototypeOf(this, UnauthorizedException.prototype);
 	}
 }

@@ -1,13 +1,9 @@
-import { StatusCodes, getReasonPhrase } from 'http-status-codes';
+import { StatusCodes } from 'http-status-codes';
+import HttpError from '@utils/errors/http-error';
 
-class InternalServerError extends Error {
-	status: number;
-	name: string;
+class InternalServerError extends HttpError {
 	constructor(message: string) {
-		super(message);
-		this.status = StatusCodes.INTERNAL_SERVER_ERROR;
-		this.name = getReasonPhrase(this.status);
-		// Set the prototype explicitly.
+		super(StatusCodes.INTERNAL_SERVER_ERROR, message);
 		Object.setPrototypeOf(this, InternalServerError.prototype);
 	}
 }

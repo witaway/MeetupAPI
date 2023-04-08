@@ -1,13 +1,9 @@
-import { StatusCodes, getReasonPhrase } from 'http-status-codes';
+import { StatusCodes } from 'http-status-codes';
+import HttpError from '@utils/errors/http-error';
 
-class GoneException extends Error {
-	status: number;
-	name: string;
+class GoneException extends HttpError {
 	constructor(message: string) {
-		super(message);
-		this.status = StatusCodes.GONE;
-		this.name = getReasonPhrase(this.status);
-		// Set the prototype explicitly.
+		super(StatusCodes.GONE, message);
 		Object.setPrototypeOf(this, GoneException.prototype);
 	}
 }
