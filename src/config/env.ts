@@ -1,4 +1,4 @@
-import { cleanEnv, port, str, host } from 'envalid';
+import { cleanEnv, port, str, url } from 'envalid';
 import * as process from 'process';
 
 const env = cleanEnv(process.env, {
@@ -12,7 +12,7 @@ const env = cleanEnv(process.env, {
 	COOKIE_SECRET: str(),
 
 	// Auth data for database
-	DATABASE_URL: host(),
+	DATABASE_URL: url(),
 });
 
 export default env;
