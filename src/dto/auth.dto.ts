@@ -15,12 +15,12 @@ const registerCredentials = z.object({
 export type LoginCredentials = z.infer<typeof loginCredentials>;
 export type RegisterCredentials = z.infer<typeof registerCredentials>;
 
-export const loginSchema: RequestSchema = {
-	body: loginCredentials,
+export const loginSchema = {
+	body: loginCredentials.strict(),
 } as const satisfies RequestSchema;
 
 export const registerSchema = {
-	body: registerCredentials,
+	body: registerCredentials.strict(),
 } as const satisfies RequestSchema;
 
 export const logoutSchema = {} as const satisfies RequestSchema;
