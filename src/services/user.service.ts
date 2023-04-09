@@ -35,7 +35,7 @@ class UserService {
 
 	static async deleteByID(id: number) {
 		await UserService.getByID(id);
-		await UserRepository.deleteByID(id);
+		return UserRepository.deleteByID(id);
 	}
 }
 
