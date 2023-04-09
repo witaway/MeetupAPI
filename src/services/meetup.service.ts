@@ -1,4 +1,8 @@
-import { ForbiddenException, NotFoundException } from '@utils/errors';
+import {
+	ConflictException,
+	ForbiddenException,
+	NotFoundException,
+} from '@utils/errors';
 import { MeetupInfo } from '@dto/meetup.dto';
 import MeetupRepository from '@repositories/meetup.repository';
 
@@ -39,6 +43,28 @@ class MeetupService {
 			throw new ForbiddenException("You haven't rights to delete the meetup");
 		}
 		return MeetupRepository.deleteByID(meetupId);
+	}
+
+	static async listTags(meetupId: number) {
+		return MeetupRepository.readTags(meetupId);
+	}
+
+	static async addTag(meetupId: number, tagId: number) {
+		const tags = await this.listTags(meetupId);
+		const isTagSet = tags.some((tag) => tag.id === tagId);
+		if (isTagSet) {
+			throw new ConflictException('The tag is already set to the meetup');
+		}
+		return MeetupRepository.addTag(meetupId, tagId);
+	}
+
+	static async removeTag(meetupId: number, tagId: number) {
+		const tags = await this.listTags(meetupId);
+		const isTagSet = tags.some((tag) => tag.id === tagId);
+		if (!isTagSet) {
+			throw new ConflictException("The meetup doesn't have such tag");
+		}
+		return MeetupRepository.removeTag(meetupId, tagId);
 	}
 }
 

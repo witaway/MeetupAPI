@@ -87,6 +87,48 @@ class MeetupRepository {
 			where: { id },
 		});
 	}
+
+	static async readTags(meetupId: number) {
+		return prisma.tag.findMany({
+			where: {
+				meetups: {
+					some: {
+						id: meetupId,
+					},
+				},
+			},
+		});
+	}
+
+	static async addTag(meetupId: number, tagId: number) {
+		return prisma.tag.update({
+			where: {
+				id: tagId,
+			},
+			data: {
+				meetups: {
+					connect: {
+						id: meetupId,
+					},
+				},
+			},
+		});
+	}
+
+	static async removeTag(meetupId: number, tagId: number) {
+		return prisma.tag.update({
+			where: {
+				id: tagId,
+			},
+			data: {
+				meetups: {
+					disconnect: {
+						id: meetupId,
+					},
+				},
+			},
+		});
+	}
 }
 
 export default MeetupRepository;

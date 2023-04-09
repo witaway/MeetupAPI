@@ -7,7 +7,7 @@ import {
 	readAllMeetupsSchema,
 	readMeetupSchema,
 	updateMeetupSchema,
-} from '@dto/meetups.dto';
+} from '@dto/meetup.dto';
 import MeetupService from '@services/meetup.service';
 
 class MeetupController {
