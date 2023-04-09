@@ -23,18 +23,24 @@ const validate = function <TParams = any, TQuery = any, TBody = any>(
 			const parsed = params.safeParse(req.params);
 			if (!parsed.success) {
 				errors.push({ type: 'Params', errors: parsed.error });
+			} else {
+				req.params = parsed.data;
 			}
 		}
 		if (query) {
 			const parsed = query.safeParse(req.query);
 			if (!parsed.success) {
 				errors.push({ type: 'Query', errors: parsed.error });
+			} else {
+				req.query = parsed.data;
 			}
 		}
 		if (body) {
 			const parsed = body.safeParse(req.body);
 			if (!parsed.success) {
 				errors.push({ type: 'Body', errors: parsed.error });
+			} else {
+				req.body = parsed.data;
 			}
 		}
 		if (errors.length > 0) {
