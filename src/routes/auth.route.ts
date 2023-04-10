@@ -1,12 +1,16 @@
 import { Router } from 'express';
 import validate from '@middlewares/validate.middleware';
-import { loginSchema, logoutSchema, registerSchema } from '@dto/auth.dto';
 import AuthController from '../controllers/auth.controller';
+import AuthSchemas from '@dto/schemas/auth.dto';
 
 const authRouter = Router();
 
-authRouter.post('/register', validate(registerSchema), AuthController.register);
-authRouter.get('/login', validate(loginSchema), AuthController.login);
-authRouter.get('/logout', validate(logoutSchema), AuthController.logout);
+authRouter.post(
+	'/register',
+	validate(AuthSchemas.register),
+	AuthController.register,
+);
+authRouter.post('/login', validate(AuthSchemas.login), AuthController.login);
+authRouter.post('/logout', validate(AuthSchemas.logout), AuthController.logout);
 
 export default authRouter;

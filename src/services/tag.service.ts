@@ -1,6 +1,6 @@
 import TagRepository from '@repositories/tag.repository';
 import { NotFoundException } from '@utils/errors';
-import { TagInfo } from '@dto/tags.dto';
+import { TagInfo } from '@dto/definitions/tags.dto';
 
 class TagService {
 	static async create(tagInfo: TagInfo) {

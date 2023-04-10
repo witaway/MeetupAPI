@@ -3,7 +3,7 @@ import {
 	ForbiddenException,
 	NotFoundException,
 } from '@utils/errors';
-import { MeetupInfo } from '@dto/meetup.dto';
+import { MeetupInfo } from '@dto/definitions/meetup.dto';
 import MeetupRepository from '@repositories/meetup.repository';
 
 class MeetupService {

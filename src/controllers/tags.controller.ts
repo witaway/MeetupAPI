@@ -1,18 +1,12 @@
 import ResponseFormat from '@utils/response-format';
-import { NextFunction, Response } from 'express-serve-static-core';
+import { Response } from 'express-serve-static-core';
 import { TypedRequest } from '@customTypes/express-typed-request';
-import {
-	createTagSchema,
-	deleteTagSchema,
-	readAllTagsSchema,
-	readTagSchema,
-	updateTagSchema,
-} from '@dto/tags.dto';
 import TagService from '@services/tag.service';
+import TagSchemas from '@dto/schemas/tags.dto';
 
 class TagsController {
 	static async create(
-		req: TypedRequest<typeof createTagSchema>,
+		req: TypedRequest<typeof TagSchemas.create>,
 		res: Response,
 	) {
 		const tag = await TagService.create(req.body);
@@ -22,7 +16,7 @@ class TagsController {
 	}
 
 	static async update(
-		req: TypedRequest<typeof updateTagSchema>,
+		req: TypedRequest<typeof TagSchemas.update>,
 		res: Response,
 	) {
 		const updatedTag = await TagService.updateByID(req.params.tagId, req.body);
@@ -34,7 +28,7 @@ class TagsController {
 	}
 
 	static async readAll(
-		req: TypedRequest<typeof readAllTagsSchema>,
+		req: TypedRequest<typeof TagSchemas.readAll>,
 		res: Response,
 	) {
 		const tags = await TagService.getList();
@@ -46,7 +40,7 @@ class TagsController {
 	}
 
 	static async readById(
-		req: TypedRequest<typeof readTagSchema>,
+		req: TypedRequest<typeof TagSchemas.read>,
 		res: Response,
 	) {
 		const tag = await TagService.getByID(req.params.tagId);
@@ -56,7 +50,7 @@ class TagsController {
 	}
 
 	static async delete(
-		req: TypedRequest<typeof deleteTagSchema>,
+		req: TypedRequest<typeof TagSchemas.delete>,
 		res: Response,
 	) {
 		const deletedTag = await TagService.deleteByID(req.params.tagId);

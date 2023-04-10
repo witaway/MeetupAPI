@@ -1,16 +1,12 @@
 import ResponseFormat from '@utils/response-format';
 import { Response } from 'express-serve-static-core';
 import { TypedRequest } from '@customTypes/express-typed-request';
-import {
-	addTagToMeetupSchema,
-	readAllTagsOfMeetupSchema,
-	removeTagFromMeetupSchema,
-} from '@dto/meetup-tags.dto';
 import MeetupService from '@services/meetup.service';
+import MeetupTagsSchemas from '@dto/schemas/meetup-tags.dto';
 
 class TagsController {
 	static async readAllTagsOfMeetup(
-		req: TypedRequest<typeof readAllTagsOfMeetupSchema>,
+		req: TypedRequest<typeof MeetupTagsSchemas.readAll>,
 		res: Response,
 	) {
 		const tags = await MeetupService.listTags(req.params.meetupId);
@@ -22,7 +18,7 @@ class TagsController {
 	}
 
 	static async addTagToMeetup(
-		req: TypedRequest<typeof addTagToMeetupSchema>,
+		req: TypedRequest<typeof MeetupTagsSchemas.addTagToMeetup>,
 		res: Response,
 	) {
 		const addedTag = await MeetupService.addTag(
@@ -35,7 +31,7 @@ class TagsController {
 	}
 
 	static async removeTagFromMeetup(
-		req: TypedRequest<typeof removeTagFromMeetupSchema>,
+		req: TypedRequest<typeof MeetupTagsSchemas.removeFromMeetup>,
 		res: Response,
 	) {
 		const removedTag = await MeetupService.removeTag(

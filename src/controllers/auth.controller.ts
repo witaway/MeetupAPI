@@ -1,14 +1,13 @@
 import UserService from '@services/user.service';
 import AuthService from '@services/auth.service';
 import ResponseFormat from '@utils/response-format';
-
 import { NextFunction, Response } from 'express-serve-static-core';
 import { TypedRequest } from '@customTypes/express-typed-request';
-import { loginSchema, logoutSchema, registerSchema } from '@dto/auth.dto';
+import AuthSchemas from '@dto/schemas/auth.dto';
 
 class AuthController {
 	static async register(
-		req: TypedRequest<typeof registerSchema>,
+		req: TypedRequest<typeof AuthSchemas.register>,
 		res: Response,
 	) {
 		const userObject = await UserService.create({
@@ -21,7 +20,10 @@ class AuthController {
 			.json(ResponseFormat.success(200, 'Registered successfully', userObject));
 	}
 
-	static async login(req: TypedRequest<typeof loginSchema>, res: Response) {
+	static async login(
+		req: TypedRequest<typeof AuthSchemas.login>,
+		res: Response,
+	) {
 		const token = await AuthService.loginWithEmailAndPassword(
 			req.body.email,
 			req.body.password,
@@ -41,7 +43,7 @@ class AuthController {
 	}
 
 	static async logout(
-		req: TypedRequest<typeof logoutSchema>,
+		req: TypedRequest<typeof AuthSchemas.logout>,
 		res: Response,
 		next: NextFunction,
 	) {
