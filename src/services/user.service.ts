@@ -1,6 +1,6 @@
 import UserRepository from '@repositories/user.repository';
 import { ConflictException, NotFoundException } from '@utils/errors';
-import { RegisterCredentials } from '@dto/auth.dto';
+import { RegisterCredentials } from '@dto/definitions/auth.dto';
 
 class UserService {
 	static async create(personalInfo: RegisterCredentials) {

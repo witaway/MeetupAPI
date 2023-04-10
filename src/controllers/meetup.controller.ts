@@ -1,18 +1,12 @@
 import ResponseFormat from '@utils/response-format';
-import { NextFunction, Response } from 'express-serve-static-core';
+import { Response } from 'express-serve-static-core';
 import { TypedRequest } from '@customTypes/express-typed-request';
-import {
-	createMeetupSchema,
-	deleteMeetupSchema,
-	readAllMeetupsSchema,
-	readMeetupSchema,
-	updateMeetupSchema,
-} from '@dto/meetup.dto';
 import MeetupService from '@services/meetup.service';
+import MeetupSchemas from '@dto/schemas/meetup.dto';
 
 class MeetupController {
 	static async create(
-		req: TypedRequest<typeof createMeetupSchema>,
+		req: TypedRequest<typeof MeetupSchemas.create>,
 		res: Response,
 	) {
 		const meetup = await MeetupService.create(req!.user!.id, req.body);
@@ -22,7 +16,7 @@ class MeetupController {
 	}
 
 	static async update(
-		req: TypedRequest<typeof updateMeetupSchema>,
+		req: TypedRequest<typeof MeetupSchemas.update>,
 		res: Response,
 	) {
 		const updatedMeetup = await MeetupService.updateByID(
@@ -42,7 +36,7 @@ class MeetupController {
 	}
 
 	static async readAll(
-		req: TypedRequest<typeof readAllMeetupsSchema>,
+		req: TypedRequest<typeof MeetupSchemas.readAll>,
 		res: Response,
 	) {
 		const meetupsList = await MeetupService.getList();
@@ -58,7 +52,7 @@ class MeetupController {
 	}
 
 	static async readById(
-		req: TypedRequest<typeof readMeetupSchema>,
+		req: TypedRequest<typeof MeetupSchemas.read>,
 		res: Response,
 	) {
 		const meetup = await MeetupService.getByID(req.params.meetupId);
@@ -68,7 +62,7 @@ class MeetupController {
 	}
 
 	static async delete(
-		req: TypedRequest<typeof deleteMeetupSchema>,
+		req: TypedRequest<typeof MeetupSchemas.delete>,
 		res: Response,
 	) {
 		const deletedMeetup = await MeetupService.deleteByID(

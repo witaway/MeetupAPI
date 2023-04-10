@@ -1,30 +1,25 @@
 import { Router } from 'express';
 import validate from '@middlewares/validate.middleware';
-import {
-	addTagToMeetupSchema,
-	readAllTagsOfMeetupSchema,
-	removeTagFromMeetupSchema,
-} from '@dto/meetup-tags.dto';
 import MeetupTagsController from '../controllers/meetup-tags.controller';
-import errorsHandler from '@middlewares/errors-handler.middleware';
+import MeetupTagsSchemas from '@dto/schemas/meetup-tags.dto';
 
 const meetupTagsRouter = Router({ mergeParams: true });
 
 meetupTagsRouter.post(
 	'/',
-	validate(addTagToMeetupSchema),
+	validate(MeetupTagsSchemas.addTagToMeetup),
 	MeetupTagsController.addTagToMeetup,
 );
 
 meetupTagsRouter.get(
 	'/',
-	validate(readAllTagsOfMeetupSchema),
+	validate(MeetupTagsSchemas.readAll),
 	MeetupTagsController.readAllTagsOfMeetup,
 );
 
 meetupTagsRouter.delete(
 	'/:tagId',
-	validate(removeTagFromMeetupSchema),
+	validate(MeetupTagsSchemas.removeFromMeetup),
 	MeetupTagsController.removeTagFromMeetup,
 );
 
