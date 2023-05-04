@@ -8,8 +8,8 @@ const setupRoutes = (server: Express) => {
 	const staticFolder = path.join(__dirname, '..', '/static');
 	server.use('/static', express.static(staticFolder));
 
-	// Mount frontend router
-	server.use('/', router);
+	// Mount API router
+	server.use('/api/v1', router);
 };
 
 export default setupRoutes;
