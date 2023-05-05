@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
 
 export const meetupInfo = z.object({
 	theme: z.string().min(5).max(50),
@@ -9,7 +8,3 @@ export const meetupInfo = z.object({
 });
 
 export type MeetupInfo = z.infer<typeof meetupInfo>;
-
-export function register(registry: OpenAPIRegistry) {
-	registry.register('MeetupData', meetupInfo);
-}
