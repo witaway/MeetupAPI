@@ -1,15 +1,15 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
-import env from './config/env';
 
 import express from 'express';
 import init from './loaders';
 import logger from '@utils/logger';
+import config from '@utils/config';
 
 (async () => {
 	// Create web server
 	const app = express();
-	const port = env.HTTP_PORT;
+	const port = config.server.port;
 
 	// Initialize everything else
 	logger.info('Application init is run...');

@@ -2,7 +2,7 @@ import { Strategy as JwtStrategy } from 'passport-jwt';
 import { Request } from 'express-serve-static-core';
 import prisma from '@database/index';
 import passport from 'passport';
-import env from '@config/env';
+import config from '@utils/config';
 
 const setupPassportStrategies = () => {
 	const extractJwtFromCookiesField = (field: string) => {
@@ -16,8 +16,10 @@ const setupPassportStrategies = () => {
 	};
 
 	const options = {
-		jwtFromRequest: extractJwtFromCookiesField('jwt'),
-		secretOrKey: env.JWT_PRIVATE_KEY,
+		jwtFromRequest: extractJwtFromCookiesField(
+			config.cookie.records.accessToken.name,
+		),
+		secretOrKey: config.cookie.secret,
 	};
 
 	passport.use(

@@ -1,15 +1,17 @@
 import jwt from 'jsonwebtoken';
-import env from '@config/env';
+import config from '@utils/config';
 
 class AuthRepository {
 	static async loginById(userId: number) {
+		const privateKey = config.jwt.accessToken.privateKey;
+		const expiration = config.jwt.accessToken.expiration;
 		return jwt.sign(
 			{
 				id: userId,
 			},
-			env.JWT_PRIVATE_KEY,
+			privateKey,
 			{
-				expiresIn: 60 * 60,
+				expiresIn: expiration,
 			},
 		);
 	}

@@ -4,6 +4,8 @@ import ResponseFormat from '@utils/response-format';
 import { NextFunction, Response } from 'express-serve-static-core';
 import { TypedRequest } from '@customTypes/express-typed-request';
 import AuthSchemas from '@dto/schemas/auth.dto';
+import config from '@utils/config';
+import { addTimeToDate } from '@utils/helpers';
 
 class AuthController {
 	static async register(
@@ -29,12 +31,11 @@ class AuthController {
 			req.body.password,
 		);
 
-		const sec = 1000;
-		const min = 60 * sec;
-		const hour = 60 * min;
+		const cookieName = config.cookie.records.accessToken.name;
+		const cookieExpirationTime = config.cookie.records.accessToken.expiration;
 
-		res.cookie('jwt', token, {
-			maxAge: 2 * hour,
+		res.cookie(cookieName, token, {
+			expires: addTimeToDate(new Date(), cookieExpirationTime),
 		});
 
 		res
@@ -50,7 +51,10 @@ class AuthController {
 		req.logout((err) => {
 			return next(err);
 		});
-		res.clearCookie('jwt');
+
+		const cookieName = config.cookie.records.accessToken.name;
+
+		res.clearCookie(cookieName);
 		res
 			.status(200)
 			.json(ResponseFormat.success(200, 'Logged out successfully', {}));
