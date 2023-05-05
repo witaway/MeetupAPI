@@ -3,13 +3,13 @@ import * as express from 'express';
 import path from 'path';
 import router from '../routes';
 
-const setupRoutes = (server: Express) => {
+const setupRoutes = (app: Express) => {
 	// Mount directory with static data
 	const staticFolder = path.join(__dirname, '..', '/static');
-	server.use('/static', express.static(staticFolder));
+	app.use('/static', express.static(staticFolder));
 
 	// Mount API router
-	server.use('/api/v1', router);
+	app.use('/api/v1', router);
 };
 
 export default setupRoutes;

@@ -1,6 +1,7 @@
 import ResponseFormat from '@utils/response-format';
 import { Request, Response, NextFunction } from 'express';
 import HttpError from '@utils/errors/http-error';
+import logger from '@utils/logger';
 
 const errorsHandler = async (
 	err: Error,
@@ -20,13 +21,10 @@ const errorsHandler = async (
 	}
 	//Or if it's totally unexpected and everything is BAD
 	else {
-		res.status(500).json(
-			ResponseFormat.error(500, 'Internal Server Error', {
-				name: err.name,
-				message: err.message,
-				stack: err.stack,
-			}),
-		);
+		logger.error(err, 'Internal server error');
+		res
+			.status(500)
+			.json(ResponseFormat.error(500, 'Internal Server Error', {}));
 	}
 };
 

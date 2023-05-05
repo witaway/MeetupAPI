@@ -1,14 +1,27 @@
 import * as http from 'http';
+import logger from '@utils/logger';
 
 const setupServer = (server: http.Server, port: number) => {
-	console.log('SETUP - Starting server..');
+	server.listen(port);
 
-	server.listen(port, () => {
-		console.log(`INFO - Server started on http://localhost:${port}`);
+	// Handling server run error
+	server.on('error', (error: Error) => {
+		logger.fatal(error, 'Unable to start HTTP server');
 	});
 
-	server.on('error', (error: Error) => {
-		console.log(`ERROR - Unable to start server.\nAdditional info: ${error}`);
+	// Handling another critical error events
+	process.on('unhandledRejection', (error: Error) => {
+		logger.fatal(error, 'UNHANDLED REJECTION! Shutting down');
+		server.close(() => {
+			process.exit(1);
+		});
+	});
+
+	process.on('SIGTERM', () => {
+		logger.info('SIGTERM RECEIVED. Shutting down gracefully');
+		server.close(() => {
+			logger.info('Process terminated');
+		});
 	});
 };
 

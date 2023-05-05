@@ -8,11 +8,11 @@ import cookieParser from 'cookie-parser';
 import passport from 'passport';
 import env from '@config/env';
 
-const setupExpress = (server: Express) => {
-	server.use(bodyParser.json());
-	server.use(bodyParser.urlencoded({ extended: true }));
-	server.use(cookieParser(env.COOKIE_SECRET));
-	server.use(passport.initialize());
+const setupExpress = (app: Express) => {
+	app.use(bodyParser.json());
+	app.use(bodyParser.urlencoded({ extended: true }));
+	app.use(cookieParser(env.COOKIE_SECRET));
+	app.use(passport.initialize());
 };
 
 export default setupExpress;
