@@ -2,15 +2,17 @@ import { config } from 'dotenv';
 config();
 
 import { NestFactory } from '@nestjs/core';
-import { ValidationPipe } from '@nestjs/common';
-
-import { AppModule } from './app.module';
-import cookieParser from 'cookie-parser';
-import configuration from '@config/configuration';
-import helmet from 'helmet';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import { AppModule } from './app.module';
+
+import helmet from 'helmet';
+import cookieParser from 'cookie-parser';
+
+import { ValidationPipe } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
-import logger from './common/utils/logger';
+
+import configuration from '@config/configuration';
+import { logger } from '@common/utils';
 
 const port = configuration.server.port ?? 3000;
 

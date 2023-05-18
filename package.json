@@ -2,7 +2,7 @@
   "name": "meetup-api-training-project",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "main.js",
   "scripts": {
     "start": "node ./dist/app.js",
     "dev": "ts-node-dev -r tsconfig-paths/register old_src/app.ts",

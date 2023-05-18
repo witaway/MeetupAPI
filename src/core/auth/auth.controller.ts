@@ -12,16 +12,13 @@ import { Response } from 'express';
 import { SignUpDto, SignInDto, RefreshDto } from './auth.dto';
 import { AuthService } from './auth.service';
 import { PrismaService } from 'nestjs-prisma';
-import { addTimeToDate } from '../../common/utils/add-time-to-date';
+import { addTimeToDate } from '@common/utils';
 import configuration from '@config/configuration';
-import { AllowUnauthorizedAccess } from '../../common/decorators/allow-unauthorized-access.decorator';
+import { AllowUnauthorizedAccess } from '@common/decorators';
 
 @Controller('auth')
 export class AuthController {
-	constructor(
-		private authService: AuthService,
-		private prisma: PrismaService,
-	) {}
+	constructor(private authService: AuthService) {}
 
 	@Post('sign-up')
 	@HttpCode(HttpStatus.CREATED)

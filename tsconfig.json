@@ -24,21 +24,14 @@
 
         "paths": {
             "*": ["node_modules/*"],
-            "@customTypes/*": ["src/types/*"],
+            "@common/*": ["src/common/*"],
             "@config/*": ["src/config/*"],
-            "@database/*": ["src/database/*"],
-            "@middlewares/*": ["src/middlewares/*"],
-            "@repositories/*": ["src/repositories/*"],
-            "@services/*": ["src/services/*"],
-            "@utils/*": ["src/utils/*"],
-            "@dto/*": ["src/dto/*"]
+            "@core/*": ["src/core/*"],
         }
     },
     "exclude": ["node_modules"],
     "include": ["./src/**/*.ts", ".eslintrc.js"],
-    "files": [
-//      "old_src/types/express-extension.d.ts"
-    ],
+    "files": [],
     "ts-node": {
         "files": true
     }
