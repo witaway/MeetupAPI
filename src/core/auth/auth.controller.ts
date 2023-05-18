@@ -14,6 +14,7 @@ import { AuthService } from './auth.service';
 import { PrismaService } from 'nestjs-prisma';
 import { addTimeToDate } from '../../common/utils/add-time-to-date';
 import configuration from '@config/configuration';
+import { AllowUnauthorizedAccess } from '../../common/decorators/allow-unauthorized-access.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -24,11 +25,13 @@ export class AuthController {
 
 	@Post('sign-up')
 	@HttpCode(HttpStatus.CREATED)
+	@AllowUnauthorizedAccess()
 	public async signUp(@Body() signUpInfo: SignUpDto) {
 		return await this.authService.signUp(signUpInfo);
 	}
 
 	@Post('sign-in')
+	@AllowUnauthorizedAccess()
 	public async signIn(
 		@Body() signInDto: SignInDto,
 		@Res({ passthrough: true }) response: Response,
@@ -67,13 +70,21 @@ export class AuthController {
 		};
 	}
 
+	@Post('sign-out')
+	public async signOut(@Res({ passthrough: true }) response: Response) {
+		response.clearCookie(configuration.cookie.records.accessToken.name);
+		response.clearCookie(configuration.cookie.records.refreshToken.name);
+	}
+
 	@Post('refresh')
+	@AllowUnauthorizedAccess()
 	public async refresh(
 		@Body() refreshDto: RefreshDto,
 		@Res({ passthrough: true }) response: Response,
 	) {
-		const { accessToken, refreshToken, payload } =
-			await this.authService.refresh(refreshDto.refreshToken);
+		const { accessToken, refreshToken, payload } = this.authService.refresh(
+			refreshDto.refreshToken,
+		);
 
 		const accessTokenExpiresIn = configuration.jwt.accessToken.expiration;
 		const refreshTokenExpiresIn = payload.stayLoggedIn
