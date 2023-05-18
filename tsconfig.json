@@ -36,7 +36,9 @@
     },
     "exclude": ["node_modules"],
     "include": ["./src/**/*.ts", ".eslintrc.js"],
-    "files": ["src/types/express-extension.d.ts"],
+    "files": [
+//      "old_src/types/express-extension.d.ts"
+    ],
     "ts-node": {
         "files": true
     }

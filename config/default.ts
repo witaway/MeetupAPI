@@ -16,6 +16,7 @@ export default {
 			refreshToken: {
 				name: 'jwt-refresh',
 				expiration: '24h',
+				expirationSLI: '1y',
 			},
 		},
 	},
@@ -27,6 +28,7 @@ export default {
 		refreshToken: {
 			privateKey: 'jwt-refresh-secret-key',
 			expiration: '24h',
+			expirationSLI: '1y',
 		},
 	},
 };
