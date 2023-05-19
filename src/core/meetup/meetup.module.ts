@@ -1,8 +1,5 @@
 import { Module } from '@nestjs/common';
 import { PrismaModule } from 'nestjs-prisma';
-import { MeetupController } from '@core/meetup/controllers/meetup.controller';
-import { MeetupTagsController } from '@core/meetup/controllers/meetup-tags.controller';
-import { TagController } from '@core/meetup/controllers/tag.controller';
 import {
 	MeetupService,
 	MeetupTagsService,
@@ -13,6 +10,11 @@ import {
 	MeetupTagsRepository,
 	TagRepository,
 } from '@core/meetup/repositories';
+import {
+	MeetupController,
+	MeetupTagsController,
+	TagController,
+} from '@core/meetup/controllers';
 
 @Module({
 	imports: [PrismaModule],
