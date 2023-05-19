@@ -10,7 +10,7 @@ import { logger } from '@common/utils';
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
-	catch(exception: Error, host: ArgumentsHost) {
+	public catch(exception: Error, host: ArgumentsHost) {
 		const ctx = host.switchToHttp();
 		const response = ctx.getResponse<Response>();
 

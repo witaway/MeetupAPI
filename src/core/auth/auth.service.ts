@@ -16,11 +16,11 @@ import configuration from '@config/configuration';
 export class AuthService {
 	constructor(private jwtService: JwtService, private prisma: PrismaService) {}
 
-	public async signUp(signUpInfo: SignUpDto) {
+	public async signUp(signUpDetails: SignUpDto) {
 		// Stage 1. Check if such user is already exist
 		const existingByEmail = await this.prisma.user.findFirst({
 			where: {
-				email: signUpInfo.email,
+				email: signUpDetails.email,
 			},
 		});
 
@@ -30,7 +30,7 @@ export class AuthService {
 
 		// Stage 2. Create user entry in database
 		const user = await this.prisma.user.create({
-			data: signUpInfo,
+			data: signUpDetails,
 		});
 
 		return { user };

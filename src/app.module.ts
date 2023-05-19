@@ -2,7 +2,6 @@ import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { DatabaseModule } from './database/database.module';
 import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { AllExceptionsFilter } from '@common/filters';
-import { JsonBodyMiddleware } from '@common/middlewares';
 import { JwtAuthGuard } from '@common/guards';
 import { CoreModule } from '@core/core.module';
 
@@ -21,7 +20,5 @@ import { CoreModule } from '@core/core.module';
 	controllers: [],
 })
 export class AppModule {
-	public configure(consumer: MiddlewareConsumer) {
-		consumer.apply(JsonBodyMiddleware).forRoutes('*');
-	}
+	public configure(consumer: MiddlewareConsumer) {}
 }

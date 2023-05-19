@@ -1,30 +1,53 @@
-import { z } from 'nestjs-zod/z';
-import { createZodDto } from 'nestjs-zod';
+import {
+	IsBoolean,
+	IsDefined,
+	IsEmail,
+	IsJWT,
+	IsNotEmpty,
+	IsString,
+	MinLength,
+} from 'class-validator';
 
-export class SignUpDto extends createZodDto(
-	z
-		.object({
-			email: z.string().nonempty().email(),
-			name: z.string().min(1),
-			password: z.string().min(8),
-		})
-		.strict(),
-) {}
+export class SignUpDto {
+	@IsEmail()
+	@IsNotEmpty()
+	@IsString()
+	@IsDefined()
+	public email!: string;
 
-export class SignInDto extends createZodDto(
-	z
-		.object({
-			email: z.string().nonempty().email(),
-			password: z.string().min(8),
-			stayLoggedIn: z.boolean(),
-		})
-		.strict(),
-) {}
+	@IsNotEmpty()
+	@IsString()
+	@IsDefined()
+	public name!: string;
 
-export class RefreshDto extends createZodDto(
-	z
-		.object({
-			refreshToken: z.string().nonempty(),
-		})
-		.strict(),
-) {}
+	@MinLength(8)
+	@IsString()
+	@IsDefined()
+	public password!: string;
+}
+
+export class SignInDto {
+	@IsEmail()
+	@IsNotEmpty()
+	@IsString()
+	@IsDefined()
+	public email!: string;
+
+	@MinLength(8)
+	@IsString()
+	@IsDefined()
+	public password!: string;
+
+	@IsNotEmpty()
+	@IsBoolean()
+	@IsDefined()
+	public stayLoggedIn!: boolean;
+}
+
+export class RefreshDto {
+	@IsJWT()
+	@IsNotEmpty()
+	@IsString()
+	@IsDefined()
+	public refreshToken!: string;
+}

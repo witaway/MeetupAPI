@@ -11,7 +11,6 @@ import { Response } from 'express';
 
 import { SignUpDto, SignInDto, RefreshDto } from './auth.dto';
 import { AuthService } from './auth.service';
-import { PrismaService } from 'nestjs-prisma';
 import { addTimeToDate } from '@common/utils';
 import configuration from '@config/configuration';
 import { AllowUnauthorizedAccess } from '@common/decorators';
@@ -23,8 +22,8 @@ export class AuthController {
 	@Post('sign-up')
 	@HttpCode(HttpStatus.CREATED)
 	@AllowUnauthorizedAccess()
-	public async signUp(@Body() signUpInfo: SignUpDto) {
-		return await this.authService.signUp(signUpInfo);
+	public async signUp(@Body() signUpDetails: SignUpDto) {
+		return await this.authService.signUp(signUpDetails);
 	}
 
 	@Post('sign-in')

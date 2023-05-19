@@ -7,7 +7,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
 	constructor(private reflector: Reflector) {
 		super();
 	}
-	canActivate(context: ExecutionContext) {
+	public canActivate(context: ExecutionContext) {
 		const allowUnauthorizedRequestForHandler = this.reflector.get<boolean>(
 			'allowUnauthorizedRequest',
 			context.getHandler(),
