@@ -13,7 +13,7 @@ import {
 import { MeetupTagsService } from '@core/meetup/services';
 import { AddTagToMeetupDto } from '@core/meetup/dto/meetup-tags.dto';
 
-@Controller('/:meetupId/')
+@Controller('/meetups/:meetupId/tags')
 export class MeetupTagsController {
 	constructor(private meetupTagsService: MeetupTagsService) {}
 
