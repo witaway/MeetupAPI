@@ -12,8 +12,6 @@ import {
 	Patch,
 	Post,
 } from '@nestjs/common';
-import { User } from '@common/decorators/user.decorator';
-import { IUser } from '@common/types/user.types';
 import { UserService } from '@core/user/services/user.service';
 import { CreateUserDto, UpdateUserDto } from '@core/user/dto/user.dto';
 
@@ -46,6 +44,7 @@ export class UserController {
 		if (!user) {
 			throw new NotFoundException('User not found');
 		}
+		return user;
 	}
 
 	@Patch('/:userId')
@@ -73,10 +72,7 @@ export class UserController {
 
 	@Delete('/:userId')
 	@HttpCode(HttpStatus.NO_CONTENT)
-	public async deleteByUserId(
-		@User() user: IUser,
-		@Param('meetupId', ParseIntPipe) userId: number,
-	) {
+	public async deleteByUserId(@Param('roleId', ParseIntPipe) userId: number) {
 		if (!(await this.userService.readByUserId(userId))) {
 			throw new NotFoundException('User not found');
 		}

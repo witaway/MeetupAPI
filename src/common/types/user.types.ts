@@ -1,6 +1,6 @@
 import { Role } from '@prisma/client';
 
-export interface IUser {
+export interface User {
 	roles: Role[];
 	id: number;
 	name: string;

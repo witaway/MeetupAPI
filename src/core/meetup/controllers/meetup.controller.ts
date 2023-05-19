@@ -14,8 +14,8 @@ import {
 } from '@nestjs/common';
 import { CreateMeetupDto, UpdateMeetupDto } from '@core/meetup/dto/meetup.dto';
 import { MeetupService } from '@core/meetup/services';
-import { User } from '@common/decorators/user.decorator';
-import { IUser } from '@common/types/user.types';
+import { GetUser } from '@common/decorators/get-user.decorator';
+import { User } from '@common/types/user.types';
 
 @Controller('/meetups')
 export class MeetupController {
@@ -24,7 +24,7 @@ export class MeetupController {
 	@Post('/')
 	@HttpCode(HttpStatus.CREATED)
 	public async create(
-		@User() user: IUser,
+		@GetUser() user: User,
 		@Body() meetupDetails: CreateMeetupDto,
 	) {
 		console.dir(meetupDetails, { depth: 10 });
@@ -51,7 +51,7 @@ export class MeetupController {
 	@Patch('/:meetupId')
 	@HttpCode(HttpStatus.OK)
 	public async updateByMeetupId(
-		@User() user: IUser,
+		@GetUser() user: User,
 		@Param('meetupId', ParseIntPipe) meetupId: number,
 		@Body() meetupDetails: UpdateMeetupDto,
 	) {
@@ -67,7 +67,7 @@ export class MeetupController {
 	@Delete('/:meetupId')
 	@HttpCode(HttpStatus.NO_CONTENT)
 	public async deleteByMeetupId(
-		@User() user: IUser,
+		@GetUser() user: User,
 		@Param('meetupId', ParseIntPipe) meetupId: number,
 	) {
 		if (!(await this.meetupService.isExists(meetupId))) {
