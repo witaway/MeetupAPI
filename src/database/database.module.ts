@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { PrismaModule } from 'nestjs-prisma';
+import { hashPasswordsMiddleware } from './middlewares/hash-passwords.middleware';
 
 @Module({
 	imports: [
@@ -11,6 +12,7 @@ import { PrismaModule } from 'nestjs-prisma';
 					errorFormat: 'pretty',
 				},
 				explicitConnect: true,
+				middlewares: [hashPasswordsMiddleware],
 			},
 		}),
 	],

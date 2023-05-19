@@ -12,7 +12,7 @@ export class UserRepository {
 			data: {
 				email: userDetails.email,
 				name: userDetails.name,
-				password: hash(userDetails.password),
+				password: userDetails.password,
 			},
 		});
 		return user;
@@ -63,9 +63,6 @@ export class UserRepository {
 		userId: number,
 		userDetails: Partial<Omit<User, 'id'>>,
 	) {
-		if (userDetails.password) {
-			userDetails.password = hash(userDetails.password);
-		}
 		const newUser = this.prisma.user.update({
 			where: {
 				id: userId,
