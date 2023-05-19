@@ -14,20 +14,22 @@ import { AuthService } from './auth.service';
 import { addTimeToDate } from '@common/utils';
 import configuration from '@config/configuration';
 import { AllowUnauthorizedAccess } from '@common/decorators';
+import { Cookies } from '@common/decorators/cookies.decorator';
 
 @Controller('auth')
 export class AuthController {
 	constructor(private authService: AuthService) {}
 
+	@AllowUnauthorizedAccess()
 	@Post('sign-up')
 	@HttpCode(HttpStatus.CREATED)
-	@AllowUnauthorizedAccess()
 	public async signUp(@Body() signUpDetails: SignUpDto) {
 		return await this.authService.signUp(signUpDetails);
 	}
 
-	@Post('sign-in')
 	@AllowUnauthorizedAccess()
+	@Post('sign-in')
+	@HttpCode(HttpStatus.OK)
 	public async signIn(
 		@Body() signInDto: SignInDto,
 		@Res({ passthrough: true }) response: Response,
@@ -60,27 +62,27 @@ export class AuthController {
 			},
 		);
 
-		return {
-			accessToken,
-			refreshToken,
-		};
+		return {};
 	}
 
 	@Post('sign-out')
+	@HttpCode(HttpStatus.NO_CONTENT)
 	public async signOut(@Res({ passthrough: true }) response: Response) {
 		response.clearCookie(configuration.cookie.records.accessToken.name);
 		response.clearCookie(configuration.cookie.records.refreshToken.name);
+		return {};
 	}
 
-	@Post('refresh')
 	@AllowUnauthorizedAccess()
+	@Post('refresh')
+	@HttpCode(HttpStatus.OK)
 	public async refresh(
-		@Body() refreshDto: RefreshDto,
+		@Cookies(configuration.cookie.records.refreshToken.name)
+		oldRefreshToken: string,
 		@Res({ passthrough: true }) response: Response,
 	) {
-		const { accessToken, refreshToken, payload } = this.authService.refresh(
-			refreshDto.refreshToken,
-		);
+		const { accessToken, refreshToken, payload } =
+			this.authService.refresh(oldRefreshToken);
 
 		const accessTokenExpiresIn = configuration.jwt.accessToken.expiration;
 		const refreshTokenExpiresIn = payload.stayLoggedIn
@@ -102,9 +104,6 @@ export class AuthController {
 			},
 		);
 
-		return {
-			accessToken,
-			refreshToken,
-		};
+		return {};
 	}
 }
