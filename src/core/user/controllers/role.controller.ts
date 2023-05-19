@@ -15,7 +15,7 @@ import { CreateRoleDto, UpdateRoleDto } from '@core/user/dto/role.dto';
 import { RoleService } from '@core/user/services/role.service';
 
 @Controller('/roles')
-export class UserController {
+export class RoleController {
 	constructor(private roleService: RoleService) {}
 
 	@Post('/')
