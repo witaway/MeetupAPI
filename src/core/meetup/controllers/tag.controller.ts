@@ -6,14 +6,13 @@ import {
 	HttpCode,
 	HttpStatus,
 	NotFoundException,
-	Param,
-	ParseIntPipe,
 	Patch,
 	Post,
 } from '@nestjs/common';
 import { TagService } from '@core/meetup/services';
 import { CreateTagDto, UpdateTagDto } from '@core/meetup/dto/tag.dto';
 import { ResponseMessage } from '@common/decorators';
+import { IntParam } from '@common/decorators/int-param.decorator';
 
 @Controller('tags')
 export class TagController {
@@ -36,7 +35,7 @@ export class TagController {
 	@Get('/:tagId')
 	@HttpCode(HttpStatus.OK)
 	@ResponseMessage('Tag got successfully')
-	public async readByTagId(@Param('tagId', ParseIntPipe) tagId: number) {
+	public async readByTagId(@IntParam('tagId') tagId: number) {
 		const tag = await this.tagService.readByMeetupId(tagId);
 		if (!tag) {
 			throw new NotFoundException('Tag is not found');
@@ -48,7 +47,7 @@ export class TagController {
 	@HttpCode(HttpStatus.OK)
 	@ResponseMessage('Tag updated successfully')
 	public async updateByTagId(
-		@Param('tagId', ParseIntPipe) tagId: number,
+		@IntParam('tagId') tagId: number,
 		@Body() tagDetails: UpdateTagDto,
 	) {
 		if (!(await this.tagService.isExists(tagId))) {
@@ -60,7 +59,7 @@ export class TagController {
 	@Delete('/:tagId')
 	@HttpCode(HttpStatus.NO_CONTENT)
 	@ResponseMessage('Tag deleted successfully')
-	public async deleteByTagId(@Param('tagId', ParseIntPipe) tagId: number) {
+	public async deleteByTagId(@IntParam('tagId') tagId: number) {
 		if (!(await this.tagService.isExists(tagId))) {
 			throw new NotFoundException('Tag is not found');
 		}

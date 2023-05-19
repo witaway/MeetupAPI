@@ -6,13 +6,12 @@ import {
 	Get,
 	HttpCode,
 	HttpStatus,
-	Param,
-	ParseIntPipe,
 	Post,
 } from '@nestjs/common';
 import { MeetupTagsService } from '@core/meetup/services';
 import { AddTagToMeetupDto } from '@core/meetup/dto/meetup-tags.dto';
 import { ResponseMessage } from '@common/decorators';
+import { IntParam } from '@common/decorators/int-param.decorator';
 
 @Controller('/meetups/:meetupId/tags')
 export class MeetupTagsController {
@@ -21,9 +20,7 @@ export class MeetupTagsController {
 	@Get('/')
 	@HttpCode(HttpStatus.OK)
 	@ResponseMessage('Tags of requested meetup got successfully')
-	public async readTagsListByMeetupId(
-		@Param('meetupId', ParseIntPipe) meetupId: number,
-	) {
+	public async readTagsListByMeetupId(@IntParam('meetupId') meetupId: number) {
 		return await this.meetupTagsService.readTagsListByMeetupId(meetupId);
 	}
 
@@ -31,7 +28,7 @@ export class MeetupTagsController {
 	@HttpCode(HttpStatus.CREATED)
 	@ResponseMessage('Tag assigned to requested meetup successfully')
 	public async appendTagByMeetupId(
-		@Param('meetupId', ParseIntPipe) meetupId: number,
+		@IntParam('meetupId') meetupId: number,
 		@Body() body: AddTagToMeetupDto,
 	) {
 		const isTagAlreadySet = await this.meetupTagsService.isTagSetByMeetupId(
@@ -51,8 +48,8 @@ export class MeetupTagsController {
 	@HttpCode(HttpStatus.NO_CONTENT)
 	@ResponseMessage('Tag unassigned from requested meetup successfully')
 	public async removeTagByMeetupId(
-		@Param('meetupId', ParseIntPipe) meetupId: number,
-		@Param('tagId', ParseIntPipe) tagId: number,
+		@IntParam('meetupId') meetupId: number,
+		@IntParam('tagId') tagId: number,
 	) {
 		const isTagAlreadySet = await this.meetupTagsService.isTagSetByMeetupId(
 			meetupId,

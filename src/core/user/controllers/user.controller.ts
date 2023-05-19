@@ -7,14 +7,13 @@ import {
 	HttpCode,
 	HttpStatus,
 	NotFoundException,
-	Param,
-	ParseIntPipe,
 	Patch,
 	Post,
 } from '@nestjs/common';
 import { UserService } from '@core/user/services/user.service';
 import { CreateUserDto, UpdateUserDto } from '@core/user/dto/user.dto';
 import { ResponseMessage } from '@common/decorators';
+import { IntParam } from '@common/decorators/int-param.decorator';
 
 @Controller('/users')
 export class UserController {
@@ -43,7 +42,7 @@ export class UserController {
 	@Get('/:userId')
 	@HttpCode(HttpStatus.OK)
 	@ResponseMessage('User got successfully')
-	public async readByUserId(@Param('userId', ParseIntPipe) userId: number) {
+	public async readByUserId(@IntParam('userId') userId: number) {
 		const user = await this.userService.readByUserId(userId);
 		if (!user) {
 			throw new NotFoundException('User not found');
@@ -55,14 +54,13 @@ export class UserController {
 	@HttpCode(HttpStatus.OK)
 	@ResponseMessage('User updated successfully')
 	public async updateByUserId(
-		@Param('userId', ParseIntPipe) userId: number,
+		@IntParam('userId') userId: number,
 		@Body() userDetails: UpdateUserDto,
 	) {
 		const oldUser = await this.userService.readByUserId(userId);
 		if (!oldUser) {
 			throw new NotFoundException('User not found');
 		}
-
 		if (userDetails.email) {
 			const userWithSuchEmail = await this.userService.readByUserEmail(
 				userDetails.email,
@@ -78,7 +76,7 @@ export class UserController {
 	@Delete('/:userId')
 	@HttpCode(HttpStatus.NO_CONTENT)
 	@ResponseMessage('User deleted successfully')
-	public async deleteByUserId(@Param('roleId', ParseIntPipe) userId: number) {
+	public async deleteByUserId(@IntParam('roleId') userId: number) {
 		if (!(await this.userService.readByUserId(userId))) {
 			throw new NotFoundException('User not found');
 		}

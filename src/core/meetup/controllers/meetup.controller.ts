@@ -7,8 +7,6 @@ import {
 	HttpCode,
 	HttpStatus,
 	NotFoundException,
-	Param,
-	ParseIntPipe,
 	Patch,
 	Post,
 } from '@nestjs/common';
@@ -17,6 +15,7 @@ import { MeetupService } from '@core/meetup/services';
 import { GetUser } from '@common/decorators/get-user.decorator';
 import { User } from '@common/types/user.types';
 import { ResponseMessage } from '@common/decorators';
+import { IntParam } from '@common/decorators/int-param.decorator';
 
 @Controller('/meetups')
 export class MeetupController {
@@ -43,9 +42,7 @@ export class MeetupController {
 	@Get('/:meetupId')
 	@HttpCode(HttpStatus.OK)
 	@ResponseMessage('Meetup got successfully')
-	public async readByMeetupId(
-		@Param('meetupId', ParseIntPipe) meetupId: number,
-	) {
+	public async readByMeetupId(@IntParam('meetupId') meetupId: number) {
 		if (!(await this.meetupService.isExists(meetupId))) {
 			throw new NotFoundException('Meetup not found');
 		}
@@ -57,7 +54,7 @@ export class MeetupController {
 	@ResponseMessage('Meetup updated successfully')
 	public async updateByMeetupId(
 		@GetUser() user: User,
-		@Param('meetupId', ParseIntPipe) meetupId: number,
+		@IntParam('meetupId') meetupId: number,
 		@Body() meetupDetails: UpdateMeetupDto,
 	) {
 		if (!(await this.meetupService.isExists(meetupId))) {
@@ -74,7 +71,7 @@ export class MeetupController {
 	@ResponseMessage('Meetup deleted successfully')
 	public async deleteByMeetupId(
 		@GetUser() user: User,
-		@Param('meetupId', ParseIntPipe) meetupId: number,
+		@IntParam('meetupId') meetupId: number,
 	) {
 		if (!(await this.meetupService.isExists(meetupId))) {
 			throw new NotFoundException('Meetup not found');

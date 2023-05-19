@@ -6,13 +6,12 @@ import {
 	Get,
 	HttpCode,
 	HttpStatus,
-	Param,
-	ParseIntPipe,
 	Post,
 } from '@nestjs/common';
 import { UserRolesService } from '@core/user/services/user-roles.service';
 import { GrantRoleToUserDto } from '@core/user/dto/user-roles.dto';
 import { ResponseMessage } from '@common/decorators';
+import { IntParam } from '@common/decorators/int-param.decorator';
 
 @Controller('/users/:userId/roles')
 export class UserRolesController {
@@ -21,9 +20,7 @@ export class UserRolesController {
 	@Get('/')
 	@HttpCode(HttpStatus.OK)
 	@ResponseMessage('Roles granted to user got successfully')
-	public async readRolesListByUserId(
-		@Param('userId', ParseIntPipe) userId: number,
-	) {
+	public async readRolesListByUserId(@IntParam('userId') userId: number) {
 		return await this.userRolesService.readRolesListByUserId(userId);
 	}
 
@@ -31,7 +28,7 @@ export class UserRolesController {
 	@HttpCode(HttpStatus.CREATED)
 	@ResponseMessage('Role granted to user successfully')
 	public async grantRoleByUserId(
-		@Param('userId', ParseIntPipe) userId: number,
+		@IntParam('userId') userId: number,
 		@Body() body: GrantRoleToUserDto,
 	) {
 		const isRoleAlreadyGranted =
@@ -46,8 +43,8 @@ export class UserRolesController {
 	@HttpCode(HttpStatus.NO_CONTENT)
 	@ResponseMessage('Role revoked from user successfully')
 	public async revokeRoleByUserId(
-		@Param('userId', ParseIntPipe) userId: number,
-		@Param('roleId', ParseIntPipe) roleId: number,
+		@IntParam('userId') userId: number,
+		@IntParam('roleId') roleId: number,
 	) {
 		const isRoleAlreadyGranted =
 			await this.userRolesService.isRoleGivenByUserId(userId, roleId);

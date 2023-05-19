@@ -15,7 +15,7 @@ import { addTimeToDate } from '@common/utils';
 import configuration from '@config/configuration';
 import { AllowUnauthorizedAccess, ResponseMessage } from '@common/decorators';
 import { Cookies } from '@common/decorators/cookies.decorator';
-import { PreventResponseFormatting } from '@common/decorators/prevent-response-auto-format.decorator';
+import { PreventResponseFormatting } from '@common/decorators/prevent-response-formatting.decorator';
 
 @Controller('auth')
 export class AuthController {

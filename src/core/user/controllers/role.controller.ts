@@ -6,14 +6,13 @@ import {
 	HttpCode,
 	HttpStatus,
 	NotFoundException,
-	Param,
-	ParseIntPipe,
 	Patch,
 	Post,
 } from '@nestjs/common';
 import { CreateRoleDto, UpdateRoleDto } from '@core/user/dto/role.dto';
 import { RoleService } from '@core/user/services/role.service';
 import { ResponseMessage } from '@common/decorators';
+import { IntParam } from '@common/decorators/int-param.decorator';
 
 @Controller('/roles')
 export class RoleController {
@@ -36,7 +35,7 @@ export class RoleController {
 	@Get('/:roleId')
 	@HttpCode(HttpStatus.OK)
 	@ResponseMessage('Role got successfully')
-	public async readByRoleId(@Param('roleId', ParseIntPipe) roleId: number) {
+	public async readByRoleId(@IntParam('roleId') roleId: number) {
 		const role = await this.roleService.readByRoleId(roleId);
 		if (!role) {
 			throw new NotFoundException('Role not found');
@@ -48,7 +47,7 @@ export class RoleController {
 	@HttpCode(HttpStatus.OK)
 	@ResponseMessage('Role updated successfully')
 	public async updateByRoleId(
-		@Param('roleId', ParseIntPipe) roleId: number,
+		@IntParam('roleId') roleId: number,
 		@Body() roleDetails: UpdateRoleDto,
 	) {
 		const oldRole = await this.roleService.readByRoleId(roleId);
@@ -61,7 +60,7 @@ export class RoleController {
 	@Delete('/:roleId')
 	@HttpCode(HttpStatus.NO_CONTENT)
 	@ResponseMessage('Role deleted successfully')
-	public async deleteByUserId(@Param('roleId', ParseIntPipe) roleId: number) {
+	public async deleteByUserId(@IntParam('roleId') roleId: number) {
 		if (!(await this.roleService.readByRoleId(roleId))) {
 			throw new NotFoundException('Role not found');
 		}
