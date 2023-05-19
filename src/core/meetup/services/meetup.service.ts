@@ -7,12 +7,12 @@ export class MeetupService {
 	constructor(private meetupRepository: MeetupRepository) {}
 
 	public async isExists(meetupId: number) {
-		const meetup = await this.meetupRepository.readByID(meetupId);
+		const meetup = await this.meetupRepository.readByMeetupId(meetupId);
 		return !(meetup === null || meetup === undefined);
 	}
 
 	public async isOwner(userId: number, meetupId: number) {
-		const meetup = await this.meetupRepository.readByID(meetupId);
+		const meetup = await this.meetupRepository.readByMeetupId(meetupId);
 		if (meetup === null || meetup === undefined) {
 			throw new NotFoundException();
 		}
@@ -23,19 +23,22 @@ export class MeetupService {
 		return this.meetupRepository.create(ownerId, meetupDetails);
 	}
 
-	public async getList() {
+	public async readList() {
 		return this.meetupRepository.readList();
 	}
 
-	public async getByID(id: number) {
-		return this.meetupRepository.readByID(id);
+	public async readByMeetupId(meetupId: number) {
+		return this.meetupRepository.readByMeetupId(meetupId);
 	}
 
-	public async updateByID(meetupId: number, meetupDetails: UpdateMeetupDto) {
-		return this.meetupRepository.updateByID(meetupId, meetupDetails);
+	public async updateByMeetupId(
+		meetupId: number,
+		meetupDetails: UpdateMeetupDto,
+	) {
+		return this.meetupRepository.updateByMeetupId(meetupId, meetupDetails);
 	}
 
-	public async deleteByID(meetupId: number) {
-		return this.meetupRepository.deleteByID(meetupId);
+	public async deleteByMeetupId(meetupId: number) {
+		return this.meetupRepository.deleteByMeetupId(meetupId);
 	}
 }

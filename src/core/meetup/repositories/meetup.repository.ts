@@ -21,7 +21,7 @@ export class MeetupRepository {
 		});
 	}
 
-	public async readByID(id: number) {
+	public async readByMeetupId(meetupId: number) {
 		return this.prisma.meetup.findUnique({
 			select: {
 				id: true,
@@ -44,7 +44,7 @@ export class MeetupRepository {
 				},
 			},
 			where: {
-				id,
+				id: meetupId,
 			},
 		});
 	}
@@ -71,8 +71,8 @@ export class MeetupRepository {
 		});
 	}
 
-	public async updateByID(
-		id: number,
+	public async updateByMeetupId(
+		meetupId: number,
 		meetupDetails: Partial<Omit<Meetup, 'id' | 'ownerId'>>,
 	) {
 		return this.prisma.meetup.update({
@@ -82,13 +82,13 @@ export class MeetupRepository {
 				place: meetupDetails.place,
 				description: meetupDetails.description,
 			},
-			where: { id },
+			where: { id: meetupId },
 		});
 	}
 
-	public async deleteByID(id: number) {
+	public async deleteByMeetupId(meetupId: number) {
 		return this.prisma.meetup.delete({
-			where: { id },
+			where: { id: meetupId },
 		});
 	}
 }

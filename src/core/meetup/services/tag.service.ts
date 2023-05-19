@@ -15,19 +15,19 @@ export class TagService {
 		return this.tagRepository.create(tagDetails);
 	}
 
-	public async getList() {
+	public async readList() {
 		return this.tagRepository.readList();
 	}
 
-	public async getByID(id: number) {
-		return this.tagRepository.readByID(id);
+	public async readByMeetupId(meetupId: number) {
+		return this.tagRepository.readByID(meetupId);
 	}
 
-	public async updateByID(id: number, tagDetails: UpdateTagDto) {
-		return this.tagRepository.updateByID(id, tagDetails);
+	public async updateByMeetupId(meetupId: number, tagDetails: UpdateTagDto) {
+		return this.tagRepository.updateByID(meetupId, tagDetails);
 	}
 
-	public async deleteByID(id: number) {
-		return this.tagRepository.deleteByID(id);
+	public async deleteByMeetupId(meetupId: number) {
+		return this.tagRepository.deleteByID(meetupId);
 	}
 }

@@ -33,22 +33,24 @@ export class MeetupController {
 
 	@Get('/')
 	@HttpCode(HttpStatus.OK)
-	public async getList() {
-		return await this.meetupService.getList();
+	public async readList() {
+		return await this.meetupService.readList();
 	}
 
 	@Get('/:meetupId')
 	@HttpCode(HttpStatus.OK)
-	public async getByID(@Param('meetupId', ParseIntPipe) meetupId: number) {
+	public async readByMeetupId(
+		@Param('meetupId', ParseIntPipe) meetupId: number,
+	) {
 		if (!(await this.meetupService.isExists(meetupId))) {
 			throw new NotFoundException('Meetup not found');
 		}
-		return await this.meetupService.getByID(meetupId);
+		return await this.meetupService.readByMeetupId(meetupId);
 	}
 
 	@Patch('/:meetupId')
 	@HttpCode(HttpStatus.OK)
-	public async updateByID(
+	public async updateByMeetupId(
 		@User() user: IUser,
 		@Param('meetupId', ParseIntPipe) meetupId: number,
 		@Body() meetupDetails: UpdateMeetupDto,
@@ -59,12 +61,12 @@ export class MeetupController {
 		if (!(await this.meetupService.isOwner(user.id, meetupId))) {
 			throw new ForbiddenException("You haven't rights to edit the meetup");
 		}
-		return this.meetupService.updateByID(meetupId, meetupDetails);
+		return this.meetupService.updateByMeetupId(meetupId, meetupDetails);
 	}
 
 	@Delete('/:meetupId')
 	@HttpCode(HttpStatus.NO_CONTENT)
-	public async deleteByID(
+	public async deleteByMeetupId(
 		@User() user: IUser,
 		@Param('meetupId', ParseIntPipe) meetupId: number,
 	) {
@@ -74,6 +76,6 @@ export class MeetupController {
 		if (!(await this.meetupService.isOwner(user.id, meetupId))) {
 			throw new ForbiddenException("You haven't rights to edit the meetup");
 		}
-		return this.meetupService.deleteByID(meetupId);
+		return this.meetupService.deleteByMeetupId(meetupId);
 	}
 }

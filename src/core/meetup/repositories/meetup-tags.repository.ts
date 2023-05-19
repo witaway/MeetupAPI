@@ -5,7 +5,7 @@ import { PrismaService } from 'nestjs-prisma';
 export class MeetupTagsRepository {
 	constructor(private prisma: PrismaService) {}
 
-	public async readTags(meetupId: number) {
+	public async readTagsListByMeetupId(meetupId: number) {
 		return this.prisma.tag.findMany({
 			where: {
 				meetups: {
@@ -17,7 +17,7 @@ export class MeetupTagsRepository {
 		});
 	}
 
-	public async addTag(meetupId: number, tagId: number) {
+	public async appendTagByMeetupId(meetupId: number, tagId: number) {
 		return this.prisma.tag.update({
 			where: {
 				id: tagId,
@@ -32,7 +32,7 @@ export class MeetupTagsRepository {
 		});
 	}
 
-	public async removeTag(meetupId: number, tagId: number) {
+	public async removeTagByMeetupId(meetupId: number, tagId: number) {
 		return this.prisma.tag.update({
 			where: {
 				id: tagId,

@@ -26,14 +26,14 @@ export class TagController {
 
 	@Get('/')
 	@HttpCode(HttpStatus.OK)
-	public async getList() {
-		return await this.tagService.getList();
+	public async readList() {
+		return await this.tagService.readList();
 	}
 
 	@Get('/:tagId')
 	@HttpCode(HttpStatus.OK)
-	public async getByID(@Param('tagId', ParseIntPipe) tagId: number) {
-		const tag = await this.tagService.getByID(tagId);
+	public async readByTagId(@Param('tagId', ParseIntPipe) tagId: number) {
+		const tag = await this.tagService.readByMeetupId(tagId);
 		if (!tag) {
 			throw new NotFoundException('Tag is not found');
 		}
@@ -42,22 +42,22 @@ export class TagController {
 
 	@Patch('/:tagId')
 	@HttpCode(HttpStatus.OK)
-	public async updateByID(
+	public async updateByTagId(
 		@Param('tagId', ParseIntPipe) tagId: number,
 		@Body() tagDetails: UpdateTagDto,
 	) {
 		if (!(await this.tagService.isExists(tagId))) {
 			throw new NotFoundException('Tag is not found');
 		}
-		return await this.tagService.updateByID(tagId, tagDetails);
+		return await this.tagService.updateByMeetupId(tagId, tagDetails);
 	}
 
 	@Delete('/:tagId')
 	@HttpCode(HttpStatus.NO_CONTENT)
-	public async deleteByID(@Param('tagId', ParseIntPipe) tagId: number) {
+	public async deleteByTagId(@Param('tagId', ParseIntPipe) tagId: number) {
 		if (!(await this.tagService.isExists(tagId))) {
 			throw new NotFoundException('Tag is not found');
 		}
-		return this.tagService.deleteByID(tagId);
+		return this.tagService.deleteByMeetupId(tagId);
 	}
 }
