@@ -4,11 +4,14 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "start": "node ./dist/app.js",
-    "dev": "ts-node-dev -r tsconfig-paths/register old_src/app.ts",
-    "build": "tsc && tsc-alias",
-    "generate": "npx prisma generate",
-    "fix": "eslint --fix --ext .js,.ts ./src"
+    "prebuild": "rimraf ./dist",
+    "build": "nest build",
+    "lint": "eslint --fix --ext .js,.ts ./src",
+    "start": "nest start",
+    "start:dev": "nest start --watch",
+    "start:debug": "nest start --debug --watch",
+    "start:prod": "node ./dist/src/main",
+    "generate": "npx prisma generate"
   },
   "prisma": {
     "schema": "src/database/prisma/schema.prisma",
@@ -43,6 +46,7 @@
     "pino-pretty": "^10.0.0",
     "prisma": "^4.12.0",
     "reflect-metadata": "^0.1.13",
+    "rimraf": "^5.0.1",
     "swagger-ui-express": "^4.6.3"
   },
   "devDependencies": {
