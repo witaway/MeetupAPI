@@ -88,7 +88,7 @@ export class AuthService {
 
 		try {
 			payload = this.jwtService.verify(refreshToken, {
-				secret: process.env.REFRESH_TOKEN_SECRET,
+				secret: configuration.jwt.refreshToken.privateKey,
 			});
 		} catch (err: any) {
 			if (err.name === 'TokenExpiredError') {
