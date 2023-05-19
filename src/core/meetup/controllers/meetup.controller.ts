@@ -16,6 +16,7 @@ import { CreateMeetupDto, UpdateMeetupDto } from '@core/meetup/dto/meetup.dto';
 import { MeetupService } from '@core/meetup/services';
 import { GetUser } from '@common/decorators/get-user.decorator';
 import { User } from '@common/types/user.types';
+import { ResponseMessage } from '@common/decorators';
 
 @Controller('/meetups')
 export class MeetupController {
@@ -23,6 +24,7 @@ export class MeetupController {
 
 	@Post('/')
 	@HttpCode(HttpStatus.CREATED)
+	@ResponseMessage('Meetup created successfully')
 	public async create(
 		@GetUser() user: User,
 		@Body() meetupDetails: CreateMeetupDto,
@@ -33,12 +35,14 @@ export class MeetupController {
 
 	@Get('/')
 	@HttpCode(HttpStatus.OK)
+	@ResponseMessage('Meetups got successfully')
 	public async readList() {
 		return await this.meetupService.readList();
 	}
 
 	@Get('/:meetupId')
 	@HttpCode(HttpStatus.OK)
+	@ResponseMessage('Meetup got successfully')
 	public async readByMeetupId(
 		@Param('meetupId', ParseIntPipe) meetupId: number,
 	) {
@@ -50,6 +54,7 @@ export class MeetupController {
 
 	@Patch('/:meetupId')
 	@HttpCode(HttpStatus.OK)
+	@ResponseMessage('Meetup updated successfully')
 	public async updateByMeetupId(
 		@GetUser() user: User,
 		@Param('meetupId', ParseIntPipe) meetupId: number,
@@ -66,6 +71,7 @@ export class MeetupController {
 
 	@Delete('/:meetupId')
 	@HttpCode(HttpStatus.NO_CONTENT)
+	@ResponseMessage('Meetup deleted successfully')
 	public async deleteByMeetupId(
 		@GetUser() user: User,
 		@Param('meetupId', ParseIntPipe) meetupId: number,

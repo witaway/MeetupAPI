@@ -14,6 +14,7 @@ import {
 } from '@nestjs/common';
 import { UserService } from '@core/user/services/user.service';
 import { CreateUserDto, UpdateUserDto } from '@core/user/dto/user.dto';
+import { ResponseMessage } from '@common/decorators';
 
 @Controller('/users')
 export class UserController {
@@ -21,6 +22,7 @@ export class UserController {
 
 	@Post('/')
 	@HttpCode(HttpStatus.CREATED)
+	@ResponseMessage('User created successfully')
 	public async create(@Body() userDetails: CreateUserDto) {
 		const existingUserWithSuchEmail = await this.userService.readByUserEmail(
 			userDetails.email,
@@ -33,12 +35,14 @@ export class UserController {
 
 	@Get('/')
 	@HttpCode(HttpStatus.OK)
+	@ResponseMessage('Users got successfully')
 	public async readList() {
 		return this.userService.readList();
 	}
 
 	@Get('/:userId')
 	@HttpCode(HttpStatus.OK)
+	@ResponseMessage('User got successfully')
 	public async readByUserId(@Param('userId', ParseIntPipe) userId: number) {
 		const user = await this.userService.readByUserId(userId);
 		if (!user) {
@@ -49,6 +53,7 @@ export class UserController {
 
 	@Patch('/:userId')
 	@HttpCode(HttpStatus.OK)
+	@ResponseMessage('User updated successfully')
 	public async updateByUserId(
 		@Param('userId', ParseIntPipe) userId: number,
 		@Body() userDetails: UpdateUserDto,
@@ -72,6 +77,7 @@ export class UserController {
 
 	@Delete('/:userId')
 	@HttpCode(HttpStatus.NO_CONTENT)
+	@ResponseMessage('User deleted successfully')
 	public async deleteByUserId(@Param('roleId', ParseIntPipe) userId: number) {
 		if (!(await this.userService.readByUserId(userId))) {
 			throw new NotFoundException('User not found');

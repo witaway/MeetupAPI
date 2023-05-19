@@ -12,6 +12,7 @@ import {
 } from '@nestjs/common';
 import { MeetupTagsService } from '@core/meetup/services';
 import { AddTagToMeetupDto } from '@core/meetup/dto/meetup-tags.dto';
+import { ResponseMessage } from '@common/decorators';
 
 @Controller('/meetups/:meetupId/tags')
 export class MeetupTagsController {
@@ -19,6 +20,7 @@ export class MeetupTagsController {
 
 	@Get('/')
 	@HttpCode(HttpStatus.OK)
+	@ResponseMessage('Tags of requested meetup got successfully')
 	public async readTagsListByMeetupId(
 		@Param('meetupId', ParseIntPipe) meetupId: number,
 	) {
@@ -27,6 +29,7 @@ export class MeetupTagsController {
 
 	@Post('/')
 	@HttpCode(HttpStatus.CREATED)
+	@ResponseMessage('Tag assigned to requested meetup successfully')
 	public async appendTagByMeetupId(
 		@Param('meetupId', ParseIntPipe) meetupId: number,
 		@Body() body: AddTagToMeetupDto,
@@ -46,6 +49,7 @@ export class MeetupTagsController {
 
 	@Delete('/:tagId')
 	@HttpCode(HttpStatus.NO_CONTENT)
+	@ResponseMessage('Tag unassigned from requested meetup successfully')
 	public async removeTagByMeetupId(
 		@Param('meetupId', ParseIntPipe) meetupId: number,
 		@Param('tagId', ParseIntPipe) tagId: number,

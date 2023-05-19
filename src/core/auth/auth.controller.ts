@@ -13,23 +13,26 @@ import { SignUpDto, SignInDto } from './auth.dto';
 import { AuthService } from './auth.service';
 import { addTimeToDate } from '@common/utils';
 import configuration from '@config/configuration';
-import { AllowUnauthorizedAccess } from '@common/decorators';
+import { AllowUnauthorizedAccess, ResponseMessage } from '@common/decorators';
 import { Cookies } from '@common/decorators/cookies.decorator';
+import { PreventResponseFormatting } from '@common/decorators/prevent-response-auto-format.decorator';
 
 @Controller('auth')
 export class AuthController {
 	constructor(private authService: AuthService) {}
 
-	@AllowUnauthorizedAccess()
 	@Post('sign-up')
 	@HttpCode(HttpStatus.CREATED)
+	@AllowUnauthorizedAccess()
+	@ResponseMessage('Signed up successfully')
 	public async signUp(@Body() signUpDetails: SignUpDto) {
 		return await this.authService.signUp(signUpDetails);
 	}
 
-	@AllowUnauthorizedAccess()
 	@Post('sign-in')
 	@HttpCode(HttpStatus.OK)
+	@AllowUnauthorizedAccess()
+	@PreventResponseFormatting()
 	public async signIn(
 		@Body() signInDto: SignInDto,
 		@Res({ passthrough: true }) response: Response,
@@ -61,21 +64,20 @@ export class AuthController {
 				expires: addTimeToDate(new Date(), refreshTokenExpiresIn),
 			},
 		);
-
-		return {};
 	}
 
 	@Post('sign-out')
 	@HttpCode(HttpStatus.NO_CONTENT)
+	@PreventResponseFormatting()
 	public async signOut(@Res({ passthrough: true }) response: Response) {
 		response.clearCookie(configuration.cookie.records.accessToken.name);
 		response.clearCookie(configuration.cookie.records.refreshToken.name);
-		return {};
 	}
 
-	@AllowUnauthorizedAccess()
 	@Post('refresh')
 	@HttpCode(HttpStatus.OK)
+	@AllowUnauthorizedAccess()
+	@PreventResponseFormatting()
 	public async refresh(
 		@Cookies(configuration.cookie.records.refreshToken.name)
 		oldRefreshToken: string,
@@ -103,7 +105,5 @@ export class AuthController {
 				expires: addTimeToDate(new Date(), refreshTokenExpiresIn),
 			},
 		);
-
-		return {};
 	}
 }

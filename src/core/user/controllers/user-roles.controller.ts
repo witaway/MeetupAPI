@@ -12,6 +12,7 @@ import {
 } from '@nestjs/common';
 import { UserRolesService } from '@core/user/services/user-roles.service';
 import { GrantRoleToUserDto } from '@core/user/dto/user-roles.dto';
+import { ResponseMessage } from '@common/decorators';
 
 @Controller('/users/:userId/roles')
 export class UserRolesController {
@@ -19,6 +20,7 @@ export class UserRolesController {
 
 	@Get('/')
 	@HttpCode(HttpStatus.OK)
+	@ResponseMessage('Roles granted to user got successfully')
 	public async readRolesListByUserId(
 		@Param('userId', ParseIntPipe) userId: number,
 	) {
@@ -27,6 +29,7 @@ export class UserRolesController {
 
 	@Post('/')
 	@HttpCode(HttpStatus.CREATED)
+	@ResponseMessage('Role granted to user successfully')
 	public async grantRoleByUserId(
 		@Param('userId', ParseIntPipe) userId: number,
 		@Body() body: GrantRoleToUserDto,
@@ -41,6 +44,7 @@ export class UserRolesController {
 
 	@Delete('/:roleId')
 	@HttpCode(HttpStatus.NO_CONTENT)
+	@ResponseMessage('Role revoked from user successfully')
 	public async revokeRoleByUserId(
 		@Param('userId', ParseIntPipe) userId: number,
 		@Param('roleId', ParseIntPipe) roleId: number,
