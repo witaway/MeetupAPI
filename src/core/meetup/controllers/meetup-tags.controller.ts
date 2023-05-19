@@ -2,6 +2,7 @@ import {
 	Body,
 	ConflictException,
 	Controller,
+	Delete,
 	Get,
 	HttpCode,
 	HttpStatus,
@@ -43,7 +44,7 @@ export class MeetupTagsController {
 		);
 	}
 
-	@Post('/:tagId')
+	@Delete('/:tagId')
 	@HttpCode(HttpStatus.NO_CONTENT)
 	public async removeTagByMeetupId(
 		@Param('meetupId', ParseIntPipe) meetupId: number,
