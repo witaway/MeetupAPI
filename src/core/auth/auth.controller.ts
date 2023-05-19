@@ -9,7 +9,7 @@ import {
 
 import { Response } from 'express';
 
-import { SignUpDto, SignInDto, RefreshDto } from './auth.dto';
+import { SignUpDto, SignInDto } from './auth.dto';
 import { AuthService } from './auth.service';
 import { addTimeToDate } from '@common/utils';
 import configuration from '@config/configuration';
