@@ -7,6 +7,7 @@ import {
 import { Reflector } from '@nestjs/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { MetadataKeys } from '@common/constants/metadata';
 
 export interface Response<T> {
 	statusCode: number;
@@ -22,11 +23,11 @@ export class ResponseFormatInterceptor<T>
 
 	private isShouldPreventFormatting(context: ExecutionContext) {
 		const preventResponseFormattingOnClass = this.reflector.get<boolean>(
-			'preventResponseFormatting',
+			MetadataKeys.PREVENT_RESPONSE_FORMATTING,
 			context.getClass(),
 		);
 		const preventResponseFormattingOnHandler = this.reflector.get<boolean>(
-			'preventResponseFormatting',
+			MetadataKeys.PREVENT_RESPONSE_FORMATTING,
 			context.getHandler(),
 		);
 		return (
@@ -46,7 +47,7 @@ export class ResponseFormatInterceptor<T>
 					const statusCode = context.switchToHttp().getResponse().statusCode;
 					const message =
 						this.reflector.get<string>(
-							'responseMessage',
+							MetadataKeys.RESPONSE_MESSAGE,
 							context.getHandler(),
 						) || '';
 					return { statusCode, message, data: data || {} };

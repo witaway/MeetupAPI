@@ -1,6 +1,7 @@
 import { ExecutionContext, Injectable } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Reflector } from '@nestjs/core';
+import { MetadataKeys } from '@common/constants/metadata';
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
@@ -8,17 +9,18 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
 		super();
 	}
 	public canActivate(context: ExecutionContext) {
-		const allowUnauthorizedRequestForHandler = this.reflector.get<boolean>(
-			'allowUnauthorizedRequest',
+		const allowUnauthorizedAccessForHandler = this.reflector.get<boolean>(
+			MetadataKeys.ALLOW_UNAUTHORIZED_ACCESS,
 			context.getHandler(),
 		);
-		const allowUnauthorizedRequestForClass = this.reflector.get<boolean>(
-			'allowUnauthorizedRequest',
+
+		const allowUnauthorizedAccessForClass = this.reflector.get<boolean>(
+			MetadataKeys.ALLOW_UNAUTHORIZED_ACCESS,
 			context.getHandler(),
 		);
 		return (
-			allowUnauthorizedRequestForClass ||
-			allowUnauthorizedRequestForHandler ||
+			allowUnauthorizedAccessForClass ||
+			allowUnauthorizedAccessForHandler ||
 			super.canActivate(context)
 		);
 	}
