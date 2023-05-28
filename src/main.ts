@@ -1,6 +1,3 @@
-import { config } from 'dotenv';
-config();
-
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from './app.module';
@@ -11,10 +8,11 @@ import cookieParser from 'cookie-parser';
 import { ValidationPipe } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
 
-import configuration from '@config/configuration';
 import { logger } from '@common/utils';
+import { ConfigType } from '@nestjs/config';
 
-const port = configuration.server.port ?? 3000;
+import { ServerConfig } from '@config/server.config';
+import { CookiesConfig } from '@config/cookies.config';
 
 async function bootstrap() {
 	const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -26,20 +24,29 @@ async function bootstrap() {
 	const prismaService: PrismaService = app.get(PrismaService);
 	await prismaService.enableShutdownHooks(app);
 
+	// Load configs
+	const serverConfig: ConfigType<typeof ServerConfig> = app.get(
+		ServerConfig.KEY,
+	);
+	const cookiesConfig: ConfigType<typeof CookiesConfig> = app.get(
+		CookiesConfig.KEY,
+	);
+
+	const port = serverConfig.port;
+	const cookieSecret = cookiesConfig.secret;
+
 	// Security
 	app.use(helmet());
 	app.enableCors();
-	app.use(cookieParser(configuration.cookie.secret));
+	app.use(cookieParser(cookieSecret));
 
+	// Run server
 	app.setGlobalPrefix('v1');
-
-	await app.listen(port);
+	app.listen(port).then(() => {
+		logger.info(`Server has been started on http://localhost:${port}`);
+	});
 }
 
-bootstrap()
-	.then(() => {
-		logger.info(`SERVER STARTED on http://localhost:${port}`);
-	})
-	.catch((reason) => {
-		logger.fatal(reason, 'Unhandled exception due init. Shutting down');
-	});
+bootstrap().catch((reason) => {
+	logger.fatal(reason, 'Unhandled exception due init. Shutting down');
+});

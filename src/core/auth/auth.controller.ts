@@ -3,6 +3,7 @@ import {
 	Controller,
 	HttpCode,
 	HttpStatus,
+	Inject,
 	Post,
 	Res,
 } from '@nestjs/common';
@@ -12,14 +13,20 @@ import { Response } from 'express';
 import { SignUpDto, SignInDto } from './auth.dto';
 import { AuthService } from './auth.service';
 import { addTimeToDate } from '@common/utils';
-import configuration from '@config/configuration';
 import { AllowUnauthorizedAccess, ResponseMessage } from '@common/decorators';
 import { Cookies } from '@common/decorators/cookies.decorator';
 import { PreventResponseFormatting } from '@common/decorators/prevent-response-formatting.decorator';
+import { CookiesConfig } from '@config/cookies.config';
+import { ConfigType } from '@nestjs/config';
+import { env } from '@config/env';
 
 @Controller('auth')
 export class AuthController {
-	constructor(private authService: AuthService) {}
+	constructor(
+		private authService: AuthService,
+		@Inject(CookiesConfig.KEY)
+		private cookiesConfig: ConfigType<typeof CookiesConfig>,
+	) {}
 
 	@Post('sign-up')
 	@HttpCode(HttpStatus.CREATED)
@@ -45,20 +52,17 @@ export class AuthController {
 			signInDto.stayLoggedIn,
 		);
 
-		const accessTokenExpiresIn = configuration.jwt.accessToken.expiration;
+		const accessTokenExpiresIn =
+			this.cookiesConfig.records.accessToken.expiration;
 		const refreshTokenExpiresIn = signInDto.stayLoggedIn
-			? configuration.jwt.refreshToken.expirationSLI
-			: configuration.jwt.refreshToken.expiration;
+			? this.cookiesConfig.records.refreshToken.expirationSLI
+			: this.cookiesConfig.records.refreshToken.expiration;
 
+		response.cookie(this.cookiesConfig.records.accessToken.name, accessToken, {
+			expires: addTimeToDate(new Date(), accessTokenExpiresIn),
+		});
 		response.cookie(
-			configuration.cookie.records.accessToken.name,
-			accessToken,
-			{
-				expires: addTimeToDate(new Date(), accessTokenExpiresIn),
-			},
-		);
-		response.cookie(
-			configuration.cookie.records.refreshToken.name,
+			this.cookiesConfig.records.refreshToken.name,
 			refreshToken,
 			{
 				expires: addTimeToDate(new Date(), refreshTokenExpiresIn),
@@ -70,8 +74,8 @@ export class AuthController {
 	@HttpCode(HttpStatus.NO_CONTENT)
 	@PreventResponseFormatting()
 	public async signOut(@Res({ passthrough: true }) response: Response) {
-		response.clearCookie(configuration.cookie.records.accessToken.name);
-		response.clearCookie(configuration.cookie.records.refreshToken.name);
+		response.clearCookie(this.cookiesConfig.records.accessToken.name);
+		response.clearCookie(this.cookiesConfig.records.refreshToken.name);
 	}
 
 	@Post('refresh')
@@ -79,27 +83,24 @@ export class AuthController {
 	@AllowUnauthorizedAccess()
 	@PreventResponseFormatting()
 	public async refresh(
-		@Cookies(configuration.cookie.records.refreshToken.name)
+		@Cookies(env.COOKIE_NAME_REFRESH_TOKEN)
 		oldRefreshToken: string,
 		@Res({ passthrough: true }) response: Response,
 	) {
 		const { accessToken, refreshToken, payload } =
 			this.authService.refresh(oldRefreshToken);
 
-		const accessTokenExpiresIn = configuration.jwt.accessToken.expiration;
+		const accessTokenExpiresIn =
+			this.cookiesConfig.records.accessToken.expiration;
 		const refreshTokenExpiresIn = payload.stayLoggedIn
-			? configuration.jwt.refreshToken.expirationSLI
-			: configuration.jwt.refreshToken.expiration;
+			? this.cookiesConfig.records.refreshToken.expirationSLI
+			: this.cookiesConfig.records.refreshToken.expiration;
 
+		response.cookie(this.cookiesConfig.records.accessToken.name, accessToken, {
+			expires: addTimeToDate(new Date(), accessTokenExpiresIn),
+		});
 		response.cookie(
-			configuration.cookie.records.accessToken.name,
-			accessToken,
-			{
-				expires: addTimeToDate(new Date(), accessTokenExpiresIn),
-			},
-		);
-		response.cookie(
-			configuration.cookie.records.refreshToken.name,
+			this.cookiesConfig.records.refreshToken.name,
 			refreshToken,
 			{
 				expires: addTimeToDate(new Date(), refreshTokenExpiresIn),

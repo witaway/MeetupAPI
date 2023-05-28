@@ -5,9 +5,10 @@ import { AllExceptionsFilter } from '@common/filters';
 import { JwtAuthGuard } from '@common/guards';
 import { CoreModule } from '@core/core.module';
 import { ResponseFormatInterceptor } from '@common/interceptors/response-format.interceptor';
+import { ConfigModule } from '@config/config.module';
 
 @Module({
-	imports: [DatabaseModule, CoreModule],
+	imports: [ConfigModule, DatabaseModule, CoreModule],
 	providers: [
 		{
 			provide: APP_FILTER,

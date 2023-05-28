@@ -1,5 +1,6 @@
 import {
 	ConflictException,
+	Inject,
 	Injectable,
 	NotFoundException,
 	UnauthorizedException,
@@ -10,11 +11,16 @@ import { compare } from '@common/utils/crypto';
 import { SignInDto, SignUpDto } from './auth.dto';
 import { IJwtPayload } from './types';
 import { PrismaService } from 'nestjs-prisma';
-import configuration from '@config/configuration';
+import { ConfigType } from '@nestjs/config';
+import { JwtConfig } from '@config/jwt.config';
 
 @Injectable()
 export class AuthService {
-	constructor(private jwtService: JwtService, private prisma: PrismaService) {}
+	constructor(
+		private jwtService: JwtService,
+		private prisma: PrismaService,
+		@Inject(JwtConfig.KEY) private jwtConfig: ConfigType<typeof JwtConfig>,
+	) {}
 
 	public async signUp(signUpDetails: SignUpDto) {
 		// Stage 1. Check if such user is already exist
@@ -23,7 +29,6 @@ export class AuthService {
 				email: signUpDetails.email,
 			},
 		});
-
 		if (existingByEmail) {
 			throw new ConflictException('Email is already taken');
 		}
@@ -69,15 +74,15 @@ export class AuthService {
 		};
 
 		const accessToken = this.jwtService.sign(payload, {
-			secret: configuration.jwt.accessToken.privateKey,
-			expiresIn: configuration.jwt.accessToken.expiration,
+			secret: this.jwtConfig.accessToken.privateKey,
+			expiresIn: this.jwtConfig.accessToken.expiration,
 		});
 
 		const refreshToken = this.jwtService.sign(payload, {
-			secret: configuration.jwt.refreshToken.privateKey,
+			secret: this.jwtConfig.refreshToken.privateKey,
 			expiresIn: stayLoggedIn
-				? configuration.jwt.refreshToken.expiration
-				: configuration.jwt.refreshToken.expiration,
+				? this.jwtConfig.refreshToken.expiration
+				: this.jwtConfig.refreshToken.expirationSLI,
 		});
 
 		return { accessToken, refreshToken };
@@ -88,7 +93,7 @@ export class AuthService {
 
 		try {
 			payload = this.jwtService.verify(refreshToken, {
-				secret: configuration.jwt.refreshToken.privateKey,
+				secret: this.jwtConfig.refreshToken.privateKey,
 			});
 		} catch (err: any) {
 			if (err.name === 'TokenExpiredError') {
@@ -103,14 +108,14 @@ export class AuthService {
 		};
 
 		const newAccessToken = this.jwtService.sign(newPayload, {
-			secret: configuration.jwt.accessToken.privateKey,
-			expiresIn: configuration.jwt.accessToken.expiration,
+			secret: this.jwtConfig.accessToken.privateKey,
+			expiresIn: this.jwtConfig.accessToken.expiration,
 		});
 		const newRefreshToken = this.jwtService.sign(newPayload, {
-			secret: configuration.jwt.refreshToken.privateKey,
+			secret: this.jwtConfig.refreshToken.privateKey,
 			expiresIn: payload!.stayLoggedIn
-				? configuration.jwt.refreshToken.expiration
-				: configuration.jwt.refreshToken.expiration,
+				? this.jwtConfig.refreshToken.expiration
+				: this.jwtConfig.refreshToken.expirationSLI,
 		});
 
 		return {
