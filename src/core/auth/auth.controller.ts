@@ -52,30 +52,11 @@ export class AuthController {
 			signInDto.stayLoggedIn,
 		);
 
-		const accessTokenExpiresIn =
-			this.cookiesConfig.records.accessToken.expiration;
-		const refreshTokenExpiresIn = signInDto.stayLoggedIn
-			? this.cookiesConfig.records.refreshToken.expirationSLI
-			: this.cookiesConfig.records.refreshToken.expiration;
+		const stayLoggedIn = signInDto.stayLoggedIn;
+		await this.sendAccessTokenCookie(response, accessToken);
+		await this.sendRefreshTokenCookie(response, refreshToken, stayLoggedIn);
 
-		response.cookie(this.cookiesConfig.records.accessToken.name, accessToken, {
-			expires: addTimeToDate(new Date(), accessTokenExpiresIn),
-		});
-		response.cookie(
-			this.cookiesConfig.records.refreshToken.name,
-			refreshToken,
-			{
-				expires: addTimeToDate(new Date(), refreshTokenExpiresIn),
-			},
-		);
-	}
-
-	@Post('sign-out')
-	@HttpCode(HttpStatus.NO_CONTENT)
-	@PreventResponseFormatting()
-	public async signOut(@Res({ passthrough: true }) response: Response) {
-		response.clearCookie(this.cookiesConfig.records.accessToken.name);
-		response.clearCookie(this.cookiesConfig.records.refreshToken.name);
+		return {};
 	}
 
 	@Post('refresh')
@@ -90,21 +71,46 @@ export class AuthController {
 		const { accessToken, refreshToken, payload } =
 			this.authService.refresh(oldRefreshToken);
 
-		const accessTokenExpiresIn =
-			this.cookiesConfig.records.accessToken.expiration;
-		const refreshTokenExpiresIn = payload.stayLoggedIn
-			? this.cookiesConfig.records.refreshToken.expirationSLI
-			: this.cookiesConfig.records.refreshToken.expiration;
+		const stayLoggedIn = payload.stayLoggedIn;
+		await this.sendAccessTokenCookie(response, accessToken);
+		await this.sendRefreshTokenCookie(response, refreshToken, stayLoggedIn);
 
-		response.cookie(this.cookiesConfig.records.accessToken.name, accessToken, {
-			expires: addTimeToDate(new Date(), accessTokenExpiresIn),
-		});
-		response.cookie(
-			this.cookiesConfig.records.refreshToken.name,
-			refreshToken,
-			{
-				expires: addTimeToDate(new Date(), refreshTokenExpiresIn),
-			},
+		return {};
+	}
+
+	@Post('sign-out')
+	@HttpCode(HttpStatus.NO_CONTENT)
+	@PreventResponseFormatting()
+	public async signOut(@Res({ passthrough: true }) response: Response) {
+		response.clearCookie(this.cookiesConfig.records.accessToken.name);
+		response.clearCookie(this.cookiesConfig.records.refreshToken.name);
+	}
+
+	public async sendAccessTokenCookie(response: Response, accessToken: string) {
+		const accessTokenName = this.cookiesConfig.records.accessToken.name;
+		const accessTokenExpiresIn = addTimeToDate(
+			new Date(),
+			this.cookiesConfig.records.accessToken.expiration,
 		);
+		response.cookie(accessTokenName, accessToken, {
+			expires: accessTokenExpiresIn,
+		});
+	}
+
+	public async sendRefreshTokenCookie(
+		response: Response,
+		refreshToken: string,
+		stayLoggedIn: boolean,
+	) {
+		const refreshTokenName = this.cookiesConfig.records.refreshToken.name;
+		const refreshTokenExpiresIn = addTimeToDate(
+			new Date(),
+			stayLoggedIn
+				? this.cookiesConfig.records.refreshToken.expirationSLI
+				: this.cookiesConfig.records.refreshToken.expiration,
+		);
+		response.cookie(refreshTokenName, refreshToken, {
+			expires: refreshTokenExpiresIn,
+		});
 	}
 }
