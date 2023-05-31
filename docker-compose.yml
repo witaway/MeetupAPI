@@ -1,0 +1,80 @@
+version: '3.8'
+services:
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    container_name: api
+    depends_on:
+      - postgres
+      - pgadmin
+    ports:
+      - "8080:8080"
+    environment:
+    # Port of running application
+    - SERVER_PORT=8000
+    # URL to postgres database, MUST contain credentials
+    - DATABASE_URL=postgresql://postgres:password@localhost:5432/MeetupAPI
+    # Private key for cookie signing
+    - COOKIE_SECRET=cookie-secret
+    # Options for cookie with access token
+    - COOKIE_NAME_ACCESS_TOKEN=jwt-access
+    - COOKIE_EXPIRATION_ACCESS_TOKEN=4h
+    # Options for cookie with refresh token
+    - COOKIE_NAME_REFRESH_TOKEN=jwt-refresh
+    - COOKIE_EXPIRATION_REFRESH_TOKEN=24h
+    - COOKIE_EXPIRATION_SLI_REFRESH_TOKEN=1y
+    # Options for JWT Access token
+    - JWT_ACCESS_TOKEN_PRIVATE_KEY=jwt-access-private-key
+    - JWT_ACCESS_TOKEN_EXPIRATION=4h
+    # Options for JWT Refresh token
+    - JWT_REFRESH_TOKEN_PRIVATE_KEY=jwt-refresh-secret-key
+    - JWT_REFRESH_TOKEN_EXPIRATION=24h
+    - JWT_REFRESH_TOKEN_EXPIRATION_SLI=1y
+
+    networks:
+      - app-network
+
+  # This is the configuration for our PostgreSQL database container
+  # Note the `postgres` name is important, in out Node app when we refer
+  # to  `host: "postgres"` that value is mapped on the network to the
+  # address of this container.
+  postgres:
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=MeetupAPI
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+  # PostgreSQL pgAdmin panel accessible at http://localhost:16543/
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=email@email.com
+      - PGADMIN_DEFAULT_PASSWORD=password
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    networks:
+      - app-network
+
+volumes:
+  pgadmin-data:
+  postgres-data:
+    driver: local
+
+networks:
+  app-network:
+    driver: bridge

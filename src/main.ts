@@ -13,7 +13,7 @@ import { ConfigType } from '@nestjs/config';
 
 import { ServerConfig } from '@config/server.config';
 import { CookiesConfig } from '@config/cookies.config';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { SwaggerModule } from '@nestjs/swagger';
 import { SwaggerConfig } from '@config/swagger.config';
 
 async function bootstrap(): Promise<void> {
