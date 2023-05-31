@@ -21,6 +21,7 @@ import { ConfigType } from '@nestjs/config';
 import { env } from '@config/env';
 import { EmptyResponse } from '@common/types/empty-response';
 import { UserInfo } from '@core/user/types';
+import { ApiCookieAuth } from '@nestjs/swagger';
 
 @Controller('auth')
 export class AuthController {
@@ -88,6 +89,7 @@ export class AuthController {
 	@Post('sign-out')
 	@HttpCode(HttpStatus.NO_CONTENT)
 	@PreventResponseFormatting()
+	@ApiCookieAuth()
 	public async signOut(
 		@Res({ passthrough: true }) response: Response,
 	): Promise<EmptyResponse> {

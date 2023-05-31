@@ -5,7 +5,9 @@ import { User } from '@common/types/user.types';
 import { ResponseMessage } from '@common/decorators';
 import { ReadAllResult } from '@common/types';
 import { RoleInfo } from '@core/user/types';
+import { ApiCookieAuth } from '@nestjs/swagger';
 
+@ApiCookieAuth()
 @Controller('/users/current/roles')
 export class CurrentUserRolesController {
 	constructor(private userRolesService: UserRolesService) {}

@@ -22,7 +22,9 @@ import {
 	MeetupShortInfoWithRelated,
 } from '../types';
 import { EmptyResponse, ReadAllResult } from '@common/types';
+import { ApiCookieAuth } from '@nestjs/swagger';
 
+@ApiCookieAuth()
 @Controller('/meetups')
 export class MeetupController {
 	constructor(private meetupService: MeetupService) {}

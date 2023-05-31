@@ -13,8 +13,10 @@ import { ConfigType } from '@nestjs/config';
 
 import { ServerConfig } from '@config/server.config';
 import { CookiesConfig } from '@config/cookies.config';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { SwaggerConfig } from '@config/swagger.config';
 
-async function bootstrap() {
+async function bootstrap(): Promise<void> {
 	const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
 	// Validation
@@ -31,6 +33,9 @@ async function bootstrap() {
 	const cookiesConfig: ConfigType<typeof CookiesConfig> = app.get(
 		CookiesConfig.KEY,
 	);
+	const swaggerConfig: ConfigType<typeof SwaggerConfig> = app.get(
+		SwaggerConfig.KEY,
+	);
 
 	const port = serverConfig.port;
 	const cookieSecret = cookiesConfig.secret;
@@ -39,6 +44,10 @@ async function bootstrap() {
 	app.use(helmet());
 	app.enableCors();
 	app.use(cookieParser(cookieSecret));
+
+	// Swagger
+	const document = SwaggerModule.createDocument(app, swaggerConfig);
+	SwaggerModule.setup('docs', app, document);
 
 	// Run server
 	app.setGlobalPrefix('v1');

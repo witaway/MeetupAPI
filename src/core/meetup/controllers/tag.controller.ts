@@ -15,7 +15,9 @@ import { ResponseMessage } from '@common/decorators';
 import { IntParam } from '@common/decorators/int-param.decorator';
 import { TagInfo } from '../types';
 import { EmptyResponse, ReadAllResult } from '@common/types';
+import { ApiCookieAuth } from '@nestjs/swagger';
 
+@ApiCookieAuth()
 @Controller('tags')
 export class TagController {
 	constructor(private tagService: TagService) {}

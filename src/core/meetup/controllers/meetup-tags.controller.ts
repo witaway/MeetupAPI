@@ -14,7 +14,9 @@ import { ResponseMessage } from '@common/decorators';
 import { IntParam } from '@common/decorators/int-param.decorator';
 import { TagInfo } from '../types';
 import { EmptyResponse } from '@common/types';
+import { ApiCookieAuth } from '@nestjs/swagger';
 
+@ApiCookieAuth()
 @Controller('/meetups/:meetupId/tags')
 export class MeetupTagsController {
 	constructor(private meetupTagsService: MeetupTagsService) {}

@@ -3,6 +3,7 @@ import { ConfigModule as NestConfigModule } from '@nestjs/config';
 import { ServerConfig } from '@config/server.config';
 import { JwtConfig } from '@config/jwt.config';
 import { CookiesConfig } from '@config/cookies.config';
+import { SwaggerConfig } from '@config/swagger.config';
 
 @Module({
 	imports: [
@@ -10,7 +11,7 @@ import { CookiesConfig } from '@config/cookies.config';
 			isGlobal: true,
 			envFilePath: ['.env'],
 			expandVariables: true,
-			load: [ServerConfig, JwtConfig, CookiesConfig],
+			load: [ServerConfig, JwtConfig, CookiesConfig, SwaggerConfig],
 		}),
 	],
 })

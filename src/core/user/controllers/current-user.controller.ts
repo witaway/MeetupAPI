@@ -13,7 +13,9 @@ import { GetUser } from '@common/decorators/get-user.decorator';
 import { User } from '@common/types/user.types';
 import { ResponseMessage } from '@common/decorators';
 import { UserInfo } from '@core/user/types';
+import { ApiCookieAuth } from '@nestjs/swagger';
 
+@ApiCookieAuth()
 @Controller('/users/current')
 export class CurrentUserController {
 	constructor(private userService: UserService) {}

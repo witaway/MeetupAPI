@@ -1,0 +1,20 @@
+{
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "src",
+  "compilerOptions": {
+    "plugins": [
+      {
+        "name": "@nestjs/swagger",
+        "options": {
+          "classValidatorShim": true,
+          "dtoFileNameSuffix": [".dto.ts", ".entity.ts"],
+          "controllerFileNameSuffix": ".controller.ts",
+          "dtoKeyOfComment": "description",
+          "controllerKeyOfComment": "description",
+          "introspectComments": true
+        }
+      }
+    ],
+    "tsConfigPath": "tsconfig.build.json"
+  }
+}

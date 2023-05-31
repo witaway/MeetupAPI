@@ -15,7 +15,9 @@ import { ResponseMessage } from '@common/decorators';
 import { IntParam } from '@common/decorators/int-param.decorator';
 import { RoleInfo } from '@core/user/types';
 import { EmptyResponse, ReadAllResult } from '@common/types';
+import { ApiCookieAuth } from '@nestjs/swagger';
 
+@ApiCookieAuth()
 @Controller('/roles')
 export class RoleController {
 	constructor(private roleService: RoleService) {}
