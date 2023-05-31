@@ -10,7 +10,7 @@ import { logger } from '@common/utils';
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
-	public catch(exception: Error, host: ArgumentsHost) {
+	public catch(exception: Error, host: ArgumentsHost): void {
 		const ctx = host.switchToHttp();
 		const response = ctx.getResponse<Response>();
 
@@ -20,7 +20,8 @@ export class AllExceptionsFilter implements ExceptionFilter {
 				: HttpStatus.INTERNAL_SERVER_ERROR;
 
 		if (exception instanceof HttpException) {
-			return response.status(status).json(exception.getResponse());
+			response.status(status).json(exception.getResponse());
+			return;
 		}
 
 		logger.error(exception, 'Internal server error');

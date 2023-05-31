@@ -12,6 +12,8 @@ import { UserRolesService } from '@core/user/services/user-roles.service';
 import { GrantRoleToUserDto } from '@core/user/dto/user-roles.dto';
 import { ResponseMessage } from '@common/decorators';
 import { IntParam } from '@common/decorators/int-param.decorator';
+import { EmptyResponse, ReadAllResult } from '@common/types';
+import { RoleInfo } from '@core/user/types';
 
 @Controller('/users/:userId/roles')
 export class UserRolesController {
@@ -20,8 +22,14 @@ export class UserRolesController {
 	@Get('/')
 	@HttpCode(HttpStatus.OK)
 	@ResponseMessage('Roles granted to user got successfully')
-	public async readRolesListByUserId(@IntParam('userId') userId: number) {
-		return await this.userRolesService.readRolesListByUserId(userId);
+	public async readRolesListByUserId(
+		@IntParam('userId') userId: number,
+	): Promise<ReadAllResult<RoleInfo>> {
+		const roles = await this.userRolesService.readRolesListByUserId(userId);
+		return {
+			totalRecordsNumber: roles.length,
+			entities: roles,
+		};
 	}
 
 	@Post('/')
@@ -30,7 +38,7 @@ export class UserRolesController {
 	public async grantRoleByUserId(
 		@IntParam('userId') userId: number,
 		@Body() body: GrantRoleToUserDto,
-	) {
+	): Promise<RoleInfo> {
 		const isRoleAlreadyGranted =
 			await this.userRolesService.isRoleGivenByUserId(userId, body.roleId);
 		if (isRoleAlreadyGranted) {
@@ -45,7 +53,7 @@ export class UserRolesController {
 	public async revokeRoleByUserId(
 		@IntParam('userId') userId: number,
 		@IntParam('roleId') roleId: number,
-	) {
+	): Promise<EmptyResponse> {
 		const isRoleAlreadyGranted =
 			await this.userRolesService.isRoleGivenByUserId(userId, roleId);
 		if (!isRoleAlreadyGranted) {

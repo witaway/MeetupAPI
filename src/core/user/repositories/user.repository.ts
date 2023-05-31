@@ -1,13 +1,13 @@
 import { User } from '@prisma/client';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
-import { hash } from '@common/utils';
+import { UserInfo } from '@core/user/types';
 
 @Injectable()
 export class UserRepository {
 	constructor(private prisma: PrismaService) {}
 
-	public async create(userDetails: Omit<User, 'id'>) {
+	public async create(userDetails: Omit<User, 'id'>): Promise<UserInfo> {
 		const user = await this.prisma.user.create({
 			data: {
 				email: userDetails.email,
@@ -18,7 +18,7 @@ export class UserRepository {
 		return user;
 	}
 
-	public async readList() {
+	public async readList(): Promise<UserInfo[]> {
 		const users = this.prisma.user.findMany({
 			select: {
 				id: true,
@@ -29,7 +29,10 @@ export class UserRepository {
 		return users;
 	}
 
-	public async readByUserId(userId: number, includePassword = false) {
+	public async readByUserId(
+		userId: number,
+		includePassword = false,
+	): Promise<UserInfo | null> {
 		const user = await this.prisma.user.findUnique({
 			select: {
 				id: true,
@@ -44,7 +47,10 @@ export class UserRepository {
 		return user;
 	}
 
-	public async readByUserEmail(userEmail: string, includePassword = false) {
+	public async readByUserEmail(
+		userEmail: string,
+		includePassword = false,
+	): Promise<UserInfo | null> {
 		const user = await this.prisma.user.findUnique({
 			select: {
 				id: true,
@@ -62,7 +68,7 @@ export class UserRepository {
 	public async updateByUserId(
 		userId: number,
 		userDetails: Partial<Omit<User, 'id'>>,
-	) {
+	): Promise<UserInfo> {
 		const newUser = this.prisma.user.update({
 			where: {
 				id: userId,
@@ -72,8 +78,8 @@ export class UserRepository {
 		return newUser;
 	}
 
-	public async deleteByUserId(userId: number) {
-		await this.prisma.user.delete({
+	public async deleteByUserId(userId: number): Promise<UserInfo> {
+		return this.prisma.user.delete({
 			where: {
 				id: userId,
 			},

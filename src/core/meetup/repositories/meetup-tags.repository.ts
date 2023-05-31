@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
+import { TagInfo } from '../types';
 
 @Injectable()
 export class MeetupTagsRepository {
 	constructor(private prisma: PrismaService) {}
 
-	public async readTagsListByMeetupId(meetupId: number) {
+	public async readTagsListByMeetupId(meetupId: number): Promise<TagInfo[]> {
 		return this.prisma.tag.findMany({
 			where: {
 				meetups: {
@@ -17,7 +18,10 @@ export class MeetupTagsRepository {
 		});
 	}
 
-	public async appendTagByMeetupId(meetupId: number, tagId: number) {
+	public async appendTagByMeetupId(
+		meetupId: number,
+		tagId: number,
+	): Promise<TagInfo> {
 		return this.prisma.tag.update({
 			where: {
 				id: tagId,
@@ -32,7 +36,10 @@ export class MeetupTagsRepository {
 		});
 	}
 
-	public async removeTagByMeetupId(meetupId: number, tagId: number) {
+	public async removeTagByMeetupId(
+		meetupId: number,
+		tagId: number,
+	): Promise<TagInfo> {
 		return this.prisma.tag.update({
 			where: {
 				id: tagId,

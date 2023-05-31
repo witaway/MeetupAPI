@@ -21,7 +21,7 @@ export class ResponseFormatInterceptor<T>
 {
 	constructor(private reflector: Reflector) {}
 
-	private isShouldPreventFormatting(context: ExecutionContext) {
+	private isShouldPreventFormatting(context: ExecutionContext): boolean {
 		const preventResponseFormattingOnClass = this.reflector.get<boolean>(
 			MetadataKeys.PREVENT_RESPONSE_FORMATTING,
 			context.getClass(),

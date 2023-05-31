@@ -16,6 +16,12 @@ import { GetUser } from '@common/decorators/get-user.decorator';
 import { User } from '@common/types/user.types';
 import { ResponseMessage } from '@common/decorators';
 import { IntParam } from '@common/decorators/int-param.decorator';
+import {
+	MeetupInfo,
+	MeetupInfoWithRelated,
+	MeetupShortInfoWithRelated,
+} from '../types';
+import { EmptyResponse, ReadAllResult } from '@common/types';
 
 @Controller('/meetups')
 export class MeetupController {
@@ -27,26 +33,39 @@ export class MeetupController {
 	public async create(
 		@GetUser() user: User,
 		@Body() meetupDetails: CreateMeetupDto,
-	) {
-		console.dir(meetupDetails, { depth: 10 });
-		return await this.meetupService.create(user.id, meetupDetails);
+	): Promise<MeetupInfo> {
+		const meetup = await this.meetupService.create(user.id, meetupDetails);
+		return {
+			id: meetup.id,
+			time: meetup.time,
+			place: meetup.place,
+			theme: meetup.theme,
+			description: meetup.description,
+		};
 	}
 
 	@Get('/')
 	@HttpCode(HttpStatus.OK)
 	@ResponseMessage('Meetups got successfully')
-	public async readList() {
-		return await this.meetupService.readList();
+	public async readList(): Promise<ReadAllResult<MeetupShortInfoWithRelated>> {
+		const meetupsList = await this.meetupService.readList();
+		return {
+			totalRecordsNumber: meetupsList.length,
+			entities: meetupsList,
+		};
 	}
 
 	@Get('/:meetupId')
 	@HttpCode(HttpStatus.OK)
 	@ResponseMessage('Meetup got successfully')
-	public async readByMeetupId(@IntParam('meetupId') meetupId: number) {
-		if (!(await this.meetupService.isExists(meetupId))) {
+	public async readByMeetupId(
+		@IntParam('meetupId') meetupId: number,
+	): Promise<MeetupInfoWithRelated> {
+		const meetup = await this.meetupService.readByMeetupId(meetupId);
+		if (!meetup) {
 			throw new NotFoundException('Meetup not found');
 		}
-		return await this.meetupService.readByMeetupId(meetupId);
+		return meetup;
 	}
 
 	@Patch('/:meetupId')
@@ -56,7 +75,7 @@ export class MeetupController {
 		@GetUser() user: User,
 		@IntParam('meetupId') meetupId: number,
 		@Body() meetupDetails: UpdateMeetupDto,
-	) {
+	): Promise<MeetupInfo> {
 		if (!(await this.meetupService.isExists(meetupId))) {
 			throw new NotFoundException('Meetup not found');
 		}
@@ -72,13 +91,14 @@ export class MeetupController {
 	public async deleteByMeetupId(
 		@GetUser() user: User,
 		@IntParam('meetupId') meetupId: number,
-	) {
+	): Promise<EmptyResponse> {
 		if (!(await this.meetupService.isExists(meetupId))) {
 			throw new NotFoundException('Meetup not found');
 		}
 		if (!(await this.meetupService.isOwner(user.id, meetupId))) {
 			throw new ForbiddenException("You haven't rights to edit the meetup");
 		}
-		return this.meetupService.deleteByMeetupId(meetupId);
+		await this.meetupService.deleteByMeetupId(meetupId);
+		return {};
 	}
 }

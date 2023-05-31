@@ -9,10 +9,11 @@ import { JwtService } from '@nestjs/jwt';
 
 import { compare } from '@common/utils/crypto';
 import { SignInDto, SignUpDto } from './auth.dto';
-import { IJwtPayload } from './types';
+import { JwtPayload } from './types';
 import { PrismaService } from 'nestjs-prisma';
 import { ConfigType } from '@nestjs/config';
 import { JwtConfig } from '@config/jwt.config';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -22,7 +23,7 @@ export class AuthService {
 		@Inject(JwtConfig.KEY) private jwtConfig: ConfigType<typeof JwtConfig>,
 	) {}
 
-	public async signUp(signUpDetails: SignUpDto) {
+	public async signUp(signUpDetails: SignUpDto): Promise<User> {
 		// Stage 1. Check if such user is already exist
 		const existingByEmail = await this.prisma.user.findFirst({
 			where: {
@@ -38,7 +39,7 @@ export class AuthService {
 			data: signUpDetails,
 		});
 
-		return { user };
+		return user;
 	}
 
 	public async signIn(
@@ -67,7 +68,7 @@ export class AuthService {
 
 		const roles = user.roles.map((role) => role.id);
 
-		const payload: IJwtPayload = {
+		const payload: JwtPayload = {
 			id: user.id,
 			roles,
 			stayLoggedIn,
@@ -88,8 +89,12 @@ export class AuthService {
 		return { accessToken, refreshToken };
 	}
 
-	public refresh(refreshToken: string) {
-		let payload: IJwtPayload;
+	public async refresh(refreshToken: string): Promise<{
+		accessToken: string;
+		refreshToken: string;
+		payload: JwtPayload;
+	}> {
+		let payload: JwtPayload;
 
 		try {
 			payload = this.jwtService.verify(refreshToken, {
@@ -101,7 +106,7 @@ export class AuthService {
 			}
 		}
 
-		const newPayload: IJwtPayload = {
+		const newPayload: JwtPayload = {
 			id: payload!.id,
 			roles: payload!.roles,
 			stayLoggedIn: payload!.stayLoggedIn,

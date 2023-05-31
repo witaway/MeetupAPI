@@ -14,6 +14,8 @@ import { UserService } from '@core/user/services/user.service';
 import { CreateUserDto, UpdateUserDto } from '@core/user/dto/user.dto';
 import { ResponseMessage } from '@common/decorators';
 import { IntParam } from '@common/decorators/int-param.decorator';
+import { UserInfo } from '@core/user/types';
+import { EmptyResponse, ReadAllResult } from '@common/types';
 
 @Controller('/users')
 export class UserController {
@@ -22,7 +24,7 @@ export class UserController {
 	@Post('/')
 	@HttpCode(HttpStatus.CREATED)
 	@ResponseMessage('User created successfully')
-	public async create(@Body() userDetails: CreateUserDto) {
+	public async create(@Body() userDetails: CreateUserDto): Promise<UserInfo> {
 		const existingUserWithSuchEmail = await this.userService.readByUserEmail(
 			userDetails.email,
 		);
@@ -35,14 +37,20 @@ export class UserController {
 	@Get('/')
 	@HttpCode(HttpStatus.OK)
 	@ResponseMessage('Users got successfully')
-	public async readList() {
-		return this.userService.readList();
+	public async readList(): Promise<ReadAllResult<UserInfo>> {
+		const users = await this.userService.readList();
+		return {
+			totalRecordsNumber: users.length,
+			entities: users,
+		};
 	}
 
 	@Get('/:userId')
 	@HttpCode(HttpStatus.OK)
 	@ResponseMessage('User got successfully')
-	public async readByUserId(@IntParam('userId') userId: number) {
+	public async readByUserId(
+		@IntParam('userId') userId: number,
+	): Promise<UserInfo> {
 		const user = await this.userService.readByUserId(userId);
 		if (!user) {
 			throw new NotFoundException('User not found');
@@ -56,7 +64,7 @@ export class UserController {
 	public async updateByUserId(
 		@IntParam('userId') userId: number,
 		@Body() userDetails: UpdateUserDto,
-	) {
+	): Promise<UserInfo | null> {
 		const oldUser = await this.userService.readByUserId(userId);
 		if (!oldUser) {
 			throw new NotFoundException('User not found');
@@ -76,10 +84,13 @@ export class UserController {
 	@Delete('/:userId')
 	@HttpCode(HttpStatus.NO_CONTENT)
 	@ResponseMessage('User deleted successfully')
-	public async deleteByUserId(@IntParam('roleId') userId: number) {
+	public async deleteByUserId(
+		@IntParam('roleId') userId: number,
+	): Promise<EmptyResponse> {
 		if (!(await this.userService.readByUserId(userId))) {
 			throw new NotFoundException('User not found');
 		}
-		return this.userService.deleteByUserId(userId);
+		await this.userService.deleteByUserId(userId);
+		return {};
 	}
 }

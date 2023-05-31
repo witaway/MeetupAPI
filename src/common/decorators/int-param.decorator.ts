@@ -1,6 +1,6 @@
 import { BadRequestException, Param, ParseIntPipe } from '@nestjs/common';
 
-export const IntParam = (property: string) =>
+export const IntParam = (property: string): ParameterDecorator =>
 	Param(
 		property,
 		new ParseIntPipe({

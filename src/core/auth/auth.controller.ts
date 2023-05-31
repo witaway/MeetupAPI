@@ -19,6 +19,8 @@ import { PreventResponseFormatting } from '@common/decorators/prevent-response-f
 import { CookiesConfig } from '@config/cookies.config';
 import { ConfigType } from '@nestjs/config';
 import { env } from '@config/env';
+import { EmptyResponse } from '@common/types/empty-response';
+import { UserInfo } from '@core/user/types';
 
 @Controller('auth')
 export class AuthController {
@@ -32,8 +34,13 @@ export class AuthController {
 	@HttpCode(HttpStatus.CREATED)
 	@AllowUnauthorizedAccess()
 	@ResponseMessage('Signed up successfully')
-	public async signUp(@Body() signUpDetails: SignUpDto) {
-		return await this.authService.signUp(signUpDetails);
+	public async signUp(@Body() signUpDetails: SignUpDto): Promise<UserInfo> {
+		const user = await this.authService.signUp(signUpDetails);
+		return {
+			id: user.id,
+			name: user.name,
+			email: user.email,
+		};
 	}
 
 	@Post('sign-in')
@@ -43,7 +50,7 @@ export class AuthController {
 	public async signIn(
 		@Body() signInDto: SignInDto,
 		@Res({ passthrough: true }) response: Response,
-	) {
+	): Promise<EmptyResponse> {
 		const { accessToken, refreshToken } = await this.authService.signIn(
 			{
 				email: signInDto.email,
@@ -67,9 +74,9 @@ export class AuthController {
 		@Cookies(env.COOKIE_NAME_REFRESH_TOKEN)
 		oldRefreshToken: string,
 		@Res({ passthrough: true }) response: Response,
-	) {
+	): Promise<EmptyResponse> {
 		const { accessToken, refreshToken, payload } =
-			this.authService.refresh(oldRefreshToken);
+			await this.authService.refresh(oldRefreshToken);
 
 		const stayLoggedIn = payload.stayLoggedIn;
 		await this.sendAccessTokenCookie(response, accessToken);
@@ -81,12 +88,18 @@ export class AuthController {
 	@Post('sign-out')
 	@HttpCode(HttpStatus.NO_CONTENT)
 	@PreventResponseFormatting()
-	public async signOut(@Res({ passthrough: true }) response: Response) {
+	public async signOut(
+		@Res({ passthrough: true }) response: Response,
+	): Promise<EmptyResponse> {
 		response.clearCookie(this.cookiesConfig.records.accessToken.name);
 		response.clearCookie(this.cookiesConfig.records.refreshToken.name);
+		return {};
 	}
 
-	public async sendAccessTokenCookie(response: Response, accessToken: string) {
+	public async sendAccessTokenCookie(
+		response: Response,
+		accessToken: string,
+	): Promise<void> {
 		const accessTokenName = this.cookiesConfig.records.accessToken.name;
 		const accessTokenExpiresIn = addTimeToDate(
 			new Date(),
@@ -101,7 +114,7 @@ export class AuthController {
 		response: Response,
 		refreshToken: string,
 		stayLoggedIn: boolean,
-	) {
+	): Promise<void> {
 		const refreshTokenName = this.cookiesConfig.records.refreshToken.name;
 		const refreshTokenExpiresIn = addTimeToDate(
 			new Date(),
