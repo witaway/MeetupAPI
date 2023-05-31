@@ -8,8 +8,6 @@ import {
 
 export class CreateUserDto {
 	@IsEmail()
-	@IsNotEmpty()
-	@IsString()
 	@IsDefined()
 	public email!: string;
 
@@ -26,8 +24,6 @@ export class CreateUserDto {
 
 export class UpdateUserDto {
 	@IsEmail()
-	@IsNotEmpty()
-	@IsString()
 	public email?: string;
 
 	@IsNotEmpty()

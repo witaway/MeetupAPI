@@ -10,8 +10,6 @@ import {
 
 export class SignUpDto {
 	@IsEmail()
-	@IsNotEmpty()
-	@IsString()
 	@IsDefined()
 	public email!: string;
 
