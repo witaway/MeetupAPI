@@ -1,4 +1,4 @@
-import { cleanEnv, host, makeValidator, port, str, url } from 'envalid';
+import { cleanEnv, makeValidator, port, str, url } from 'envalid';
 import * as process from 'process';
 
 const duration = makeValidator((value) => {

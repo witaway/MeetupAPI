@@ -26,5 +26,5 @@ import { ConfigModule } from '@config/config.module';
 	controllers: [],
 })
 export class AppModule {
-	public configure(consumer: MiddlewareConsumer) {}
+	public configure(consumer: MiddlewareConsumer): void {}
 }
