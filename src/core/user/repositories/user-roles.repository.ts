@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
-import { RoleInfo } from '@core/user/types';
+import { selectRoleInfo, RoleInfo } from '@core/user/types';
 
 @Injectable()
 export class UserRolesRepository {
@@ -8,10 +8,7 @@ export class UserRolesRepository {
 
 	public async readRolesListByUserId(userId: number): Promise<RoleInfo[]> {
 		return this.prisma.role.findMany({
-			select: {
-				id: true,
-				name: true,
-			},
+			...selectRoleInfo,
 			where: {
 				users: {
 					some: {
@@ -27,6 +24,7 @@ export class UserRolesRepository {
 		roleId: number,
 	): Promise<RoleInfo> {
 		return this.prisma.role.update({
+			...selectRoleInfo,
 			where: {
 				id: roleId,
 			},
@@ -42,6 +40,7 @@ export class UserRolesRepository {
 
 	public removeRoleByUserId(userId: number, roleId: number): Promise<RoleInfo> {
 		return this.prisma.role.update({
+			...selectRoleInfo,
 			where: {
 				id: roleId,
 			},

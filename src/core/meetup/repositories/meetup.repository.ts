@@ -2,8 +2,11 @@ import { Meetup } from '@prisma/client';
 import { PrismaService } from 'nestjs-prisma';
 import { Injectable } from '@nestjs/common';
 import {
+	selectMeetupInfo,
 	MeetupInfo,
+	selectMeetupInfoWithRelated,
 	MeetupInfoWithRelated,
+	selectMeetupShortInfoWithRelated,
 	MeetupShortInfoWithRelated,
 } from '../types';
 
@@ -16,6 +19,7 @@ export class MeetupRepository {
 		meetupDetails: Omit<Meetup, 'id' | 'ownerId'>,
 	): Promise<MeetupInfo> {
 		return this.prisma.meetup.create({
+			...selectMeetupInfo,
 			data: {
 				ownerId,
 				time: meetupDetails.time,
@@ -30,26 +34,7 @@ export class MeetupRepository {
 		meetupId: number,
 	): Promise<MeetupInfoWithRelated | null> {
 		return this.prisma.meetup.findUnique({
-			select: {
-				id: true,
-				time: true,
-				theme: true,
-				place: true,
-				description: true,
-				owner: {
-					select: {
-						id: true,
-						name: true,
-						email: true,
-					},
-				},
-				tags: {
-					select: {
-						id: true,
-						name: true,
-					},
-				},
-			},
+			...selectMeetupInfoWithRelated,
 			where: {
 				id: meetupId,
 			},
@@ -58,23 +43,7 @@ export class MeetupRepository {
 
 	public async readList(): Promise<MeetupShortInfoWithRelated[]> {
 		return this.prisma.meetup.findMany({
-			select: {
-				id: true,
-				theme: true,
-				time: true,
-				owner: {
-					select: {
-						id: true,
-						name: true,
-					},
-				},
-				tags: {
-					select: {
-						id: true,
-						name: true,
-					},
-				},
-			},
+			...selectMeetupShortInfoWithRelated,
 		});
 	}
 
@@ -83,6 +52,7 @@ export class MeetupRepository {
 		meetupDetails: Partial<Omit<Meetup, 'id' | 'ownerId'>>,
 	): Promise<MeetupInfo> {
 		return this.prisma.meetup.update({
+			...selectMeetupInfo,
 			data: {
 				time: meetupDetails.time,
 				theme: meetupDetails.theme,
@@ -95,6 +65,7 @@ export class MeetupRepository {
 
 	public async deleteByMeetupId(meetupId: number): Promise<MeetupInfo> {
 		return this.prisma.meetup.delete({
+			...selectMeetupInfo,
 			where: { id: meetupId },
 		});
 	}

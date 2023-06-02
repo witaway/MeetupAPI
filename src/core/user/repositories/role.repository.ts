@@ -1,7 +1,7 @@
 import { Role } from '@prisma/client';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
-import { RoleInfo } from '@core/user/types';
+import { selectRoleInfo, RoleInfo } from '@core/user/types';
 
 @Injectable()
 export class RoleRepository {
@@ -9,6 +9,7 @@ export class RoleRepository {
 
 	public async create(roleDetails: Omit<Role, 'id'>): Promise<RoleInfo> {
 		return this.prisma.role.create({
+			...selectRoleInfo,
 			data: {
 				name: roleDetails.name,
 			},
@@ -17,6 +18,7 @@ export class RoleRepository {
 
 	public async readList(): Promise<RoleInfo[]> {
 		return this.prisma.role.findMany({
+			...selectRoleInfo,
 			select: {
 				id: true,
 				name: true,
@@ -26,10 +28,7 @@ export class RoleRepository {
 
 	public async readByRoleId(roleId: number): Promise<RoleInfo | null> {
 		return this.prisma.role.findUnique({
-			select: {
-				id: true,
-				name: true,
-			},
+			...selectRoleInfo,
 			where: {
 				id: roleId,
 			},
@@ -41,6 +40,7 @@ export class RoleRepository {
 		roleDetails: Partial<Omit<Role, 'id'>>,
 	): Promise<RoleInfo> {
 		return this.prisma.role.update({
+			...selectRoleInfo,
 			where: {
 				id: roleId,
 			},
@@ -50,6 +50,7 @@ export class RoleRepository {
 
 	public async deleteByRoleId(roleId: number): Promise<RoleInfo> {
 		return this.prisma.role.delete({
+			...selectRoleInfo,
 			where: {
 				id: roleId,
 			},

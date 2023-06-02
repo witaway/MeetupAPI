@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
-import { TagInfo } from '../types';
+import { selectTagInfo, TagInfo } from '../types';
 
 @Injectable()
 export class MeetupTagsRepository {
@@ -8,6 +8,7 @@ export class MeetupTagsRepository {
 
 	public async readTagsListByMeetupId(meetupId: number): Promise<TagInfo[]> {
 		return this.prisma.tag.findMany({
+			...selectTagInfo,
 			where: {
 				meetups: {
 					some: {
@@ -23,6 +24,7 @@ export class MeetupTagsRepository {
 		tagId: number,
 	): Promise<TagInfo> {
 		return this.prisma.tag.update({
+			...selectTagInfo,
 			where: {
 				id: tagId,
 			},
@@ -41,6 +43,7 @@ export class MeetupTagsRepository {
 		tagId: number,
 	): Promise<TagInfo> {
 		return this.prisma.tag.update({
+			...selectTagInfo,
 			where: {
 				id: tagId,
 			},

@@ -1,7 +1,7 @@
 import { Tag } from '@prisma/client';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
-import { TagInfo } from '../types';
+import { selectTagInfo, TagInfo } from '../types';
 
 @Injectable()
 export class TagRepository {
@@ -9,6 +9,7 @@ export class TagRepository {
 
 	public async create(tagDetails: Omit<Tag, 'id'>): Promise<TagInfo> {
 		return this.prisma.tag.create({
+			...selectTagInfo,
 			data: {
 				name: tagDetails.name,
 			},
@@ -17,10 +18,7 @@ export class TagRepository {
 
 	public async readByID(id: number): Promise<TagInfo | null> {
 		return this.prisma.tag.findUnique({
-			select: {
-				id: true,
-				name: true,
-			},
+			...selectTagInfo,
 			where: {
 				id,
 			},
@@ -28,7 +26,9 @@ export class TagRepository {
 	}
 
 	public async readList(): Promise<TagInfo[]> {
-		return this.prisma.tag.findMany({});
+		return this.prisma.tag.findMany({
+			...selectTagInfo,
+		});
 	}
 
 	public async updateByID(
@@ -36,6 +36,7 @@ export class TagRepository {
 		tagDetails: Partial<Omit<Tag, 'id'>>,
 	): Promise<TagInfo> {
 		return this.prisma.tag.update({
+			...selectTagInfo,
 			data: {
 				name: tagDetails.name,
 			},
@@ -45,6 +46,7 @@ export class TagRepository {
 
 	public async deleteByID(id: number): Promise<TagInfo> {
 		return this.prisma.tag.delete({
+			...selectTagInfo,
 			where: { id },
 		});
 	}
